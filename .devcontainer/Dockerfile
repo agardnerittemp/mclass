@@ -32,13 +32,13 @@ RUN KIND_RELEASE=$(curl --silent "https://api.github.com/repos/kubernetes-sigs/k
 
 # Install flagd
 # TODO: Re-enable
-RUN FLAGD_RELEASE=$(curl --silent "https://api.github.com/repos/open-feature/flagd/releases/latest" | grep '"tag_name":' | sed -E 's/.*"core\/v([^"]+)".*/\1/') \
-    && curl -sSL -o /usr/local/bin/flagd.tar.gz https://github.com/open-feature/flagd/releases/download/flagd%2Fv${FLAGD_RELEASE}/flagd_${FLAGD_RELEASE}_Linux_x86_64.tar.gz \
-    && tar -xzf /usr/local/bin/flagd.tar.gz -C /usr/local/bin/ --wildcards --no-anchored 'flagd_linux*' \
-    && rm /usr/local/bin/flagd.tar.gz \
-    && chmod +x /usr/local/bin/flagd_linux_x86_64 \
-    && mv /usr/local/bin/flagd_linux_x86_64 /usr/local/bin/flagd \
-    && flagd version 
+# RUN FLAGD_RELEASE=$(curl --silent "https://api.github.com/repos/open-feature/flagd/releases/latest" | grep '"tag_name":' | sed -E 's/.*"core\/v([^"]+)".*/\1/') \
+#     && curl -sSL -o /usr/bin/flagd.tar.gz https://github.com/open-feature/flagd/releases/download/flagd%2Fv${FLAGD_RELEASE}/flagd_${FLAGD_RELEASE}_Linux_x86_64.tar.gz \
+#     && tar -xzf /usr/bin/flagd.tar.gz -C /usr/bin/ --wildcards --no-anchored 'flagd_linux*' \
+#     && rm /usr/bin/flagd.tar.gz \
+#     && chmod +x /usr/bin/flagd_linux_x86_64 \
+#     && mv /usr/bin/flagd_linux_x86_64 /usr/bin/flagd \
+#     && flagd version 
 
 # Install nodejs
 # TODO: Re-enable
