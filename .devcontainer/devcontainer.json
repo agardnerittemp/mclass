@@ -11,7 +11,7 @@
 	"remoteUser": "vscode",
 
 	"hostRequirements": {
-		"cpus": 4
+		"cpus": 2
 	},
 
 	// forward ports for the app
