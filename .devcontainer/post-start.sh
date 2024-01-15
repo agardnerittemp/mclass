@@ -11,8 +11,6 @@ echo "post-start start" >> ~/status
 #docker pull mcr.microsoft.com/dotnet/aspnet:5.0-alpine
 #docker pull mcr.microsoft.com/dotnet/sdk:5.0
 
-echo "post-start complete" >> ~/status
-
 # Run some logic
 # If logic is OK: Send bizevent: OK
 # If logic !OK: Send bizevent: error
@@ -31,3 +29,5 @@ fi
 
 # Finally, destroy the codespace
 #gh codespace delete --codespace $CODESPACE_NAME
+
+echo "post-start complete" >> ~/status
