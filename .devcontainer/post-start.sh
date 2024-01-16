@@ -14,6 +14,9 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 kubectl wait --for=condition=Available=True deploy -n argocd --all --timeout=90s
 echo "[post-start] argocd deployed" >> ~/status
 
+pwd_output=$(pwd)
+echo "[post-start] ${pwd_output}" >> ~/status
+
 ##########################
 # 1. Install test harness dependencies
 # 2. Run test harness
