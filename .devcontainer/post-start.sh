@@ -20,8 +20,12 @@ echo "[post-start] ${pwd_output}" >> ~/status
 ##########################
 # 1. Install test harness dependencies
 # 2. Run test harness
-pip install -r ../requirements.txt
+pip install -r requirements.txt
 
-python ../testharness.py
+echo "[post-start] python requirements installed"
 
-echo "post-start complete" >> ~/status
+python testharness.py
+
+echo "[post-start] testharness.py finished"
+
+echo "[post-start] complete" >> ~/status
