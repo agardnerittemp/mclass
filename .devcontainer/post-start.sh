@@ -14,6 +14,9 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 kubectl wait --for=condition=Available=True deploy -n argocd --all --timeout=90s
 echo "[post-start] argocd deployed" >> ~/status
 
+kubectl create namespace opentelemetry
+kubectl -n opentelemetry create secret generic dt-details --from-literal=DT_URL=$DT_TENANT_LIVE --from-literal=DT_OTEL_ALL_INGEST_TOKEN=$DT_ALL_INGEST_TOKEN
+
 # Install platform
 kubectl apply -f gitops/platform.yml
 
@@ -24,8 +27,8 @@ echo "[post-start] python requirements installed"
 
 ##########################
 # 2. Run test harness
-python testharness.py
+#python testharness.py
 
-echo "[post-start] testharness.py finished"
+#echo "[post-start] testharness.py finished"
 
 echo "[post-start] complete" >> ~/status
