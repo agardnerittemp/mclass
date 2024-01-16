@@ -19,8 +19,12 @@ def sendNotification(success, msg_string="", destroy_codespace=False):
     if destroy_codespace:
         print(f"Destroying codespace: {codespace_name}")
         #codespace_name = 
-        destry_codespace_output = subprocess.run(["gh", "codespace", "delete", "--codespace", codespace_name], capture_output=True, text=True)
-        print(destry_codespace_output)
+        destroy_codespace_output = subprocess.run(["gh", "codespace", "delete", "--codespace", codespace_name], capture_output=True, text=True)
+        print(destroy_codespace_output)
+        if destroy_codespace_output.returncode == 0:
+            sendNotification(success=True, msg_string=f"codespace {codespace_name} deleted successfully", destroy_codespace=False)
+        else:
+            sendNotification(success=False, msg_string=f"failed to delete codespace {codespace_name}. {destroy_codespace_output.stderr}", destroy_codespace=False)
 
 
 
