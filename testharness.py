@@ -1,26 +1,33 @@
 import subprocess
 import requests
 
-def sendNotification(success):
+def sendNotification(success, error_string=""):
 
     url = "https://webhook.site/1e9185e3-1225-439b-8381-044fd1f417cc"
 
     payload = {
-        "foo": "bar",
-        "success": success
+        "success": success,
+        "error": error_string
     }
 
     response = requests.post(url=url, json=payload)
 
     print(f"Response: {response.status_code}")
 
-try:
-    #output = subprocess.run(["ls", "-al"], capture_output=True, text=True) # works
-    output = subprocess.run(["kubectl", "get", "nodes"], capture_output=True, text=True) # works
+#def destroyCodespace():
+    # TODO
 
-    if "test.txt" in output.stdout:
-        print("Found test.txt")
-    else:
-        print("test.txt missing")
+#################################
+# Main test harness
+#################################
+try:
+    output = subprocess.run(["kubectl", "get", "namespaces"], capture_output=True, text=True) # works
+
+    if "argocd" not in output.stdout:
+        sendNotification(success=False, error_string="argocd namespace missing")
+        # TODO
+        # destroyCodespace()
 except Exception as e:
-    exit(f"ERROR: Got an error. Perhaps kubectl is not installed? {e}")
+    sendNotification(success=False, error_string=str(e))
+    # TODO
+    # destroyCodespace()
