@@ -1,5 +1,8 @@
 import subprocess
 import requests
+import os
+
+codespace_name = os.environ.get("CODESPACE_NAME")
 
 def sendNotification(success, msg_string="", destroy_codespace=False):
 
@@ -14,7 +17,12 @@ def sendNotification(success, msg_string="", destroy_codespace=False):
 
     # If user wishes to immediately 
     if destroy_codespace:
-        subprocess.run(["gh", "codespace", "delete", "--codespace", "$CODESPACE_NAME"], capture_output=True, text=True)
+        print(f"Destroying codespace: {codespace_name}")
+        #codespace_name = 
+        destry_codespace_output = subprocess.run(["gh", "codespace", "delete", "--codespace", codespace_name], capture_output=True, text=True)
+        print(destry_codespace_output)
+
+
 
 #################################
 # Main test harness
