@@ -32,4 +32,4 @@ except Exception as e:
     sendNotification(success=False, msg_string=str(e), destroy_codespace=True)
 
 # test harness successful. Send congrats message
-sendNotification(success=True, msg_string="test harness executed successfully", destroy_codespace=True)
+sendNotification(success=True, msg_string="test harness executed successfully: v1.0.0", destroy_codespace=True)
