@@ -46,6 +46,8 @@
 	"forwardPorts": [
 		80,
 		443,
+		4317,
+		4318,
 		30100,
 		30101,
 		30102,
@@ -61,7 +63,9 @@
 		"30101": { "label": "Grafana" },
 		"30102": { "label": "Prometheus" },
 		"30103": { "label": "DemoApp" },
-		"30104": { "label": "Jaeger" }
+		"30104": { "label": "Jaeger" },
+		"4317": {"label": "OTEL Collector gRPC"},
+		"4318": {"label": "OTEL Collector HTTP"},
 	},
 
 	// "remoteEnv": {
