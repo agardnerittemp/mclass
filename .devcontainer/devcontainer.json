@@ -13,6 +13,28 @@
 		"ghcr.io/devcontainers/features/github-cli:1": {}
 	},
 
+	// forward ports for the app
+	"forwardPorts": [
+		80,
+		443,
+		30100,
+		30101,
+		30102,
+		30103,
+		30104
+	],
+
+	// add labels
+	"portsAttributes": {
+		"80": { "label": "NginX Ingress HTTP" },
+		"443": { "label": "NginX Ingress HTTPS" },
+		"30100": { "label": "ArgoCD HTTP" },
+		"30101": { "label": "Grafana" },
+		"30102": { "label": "Prometheus" },
+		"30103": { "label": "DemoApp" },
+		"30104": { "label": "Jaeger" }
+	},
+
 	"remoteEnv": {
 		"SYNC_LOCALHOST_KUBECONFIG": "true"
 	},
