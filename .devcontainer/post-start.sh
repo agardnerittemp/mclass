@@ -3,9 +3,9 @@
 echo "[post-start] start" >> ~/status
 
 # Start the cluster
-minikube start
+kind create cluster --config .devcontainer/kind-cluster.yml --wait 300s
 
-echo "[post-start] minikube available" >> ~/status
+echo "[post-start] cluster available" >> ~/status
 
 # install argocd
 kubectl create namespace argocd

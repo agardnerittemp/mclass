@@ -7,7 +7,7 @@ metadata:
     dt.owner: "platform_team"
 spec:
   source:
-    path: "applications/platform"
+    path: "gitops/applications/platform"
     repoURL: 'https://github.com/agardnerit/mclass.git'
     targetRevision: main
   destination:
