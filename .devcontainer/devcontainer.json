@@ -1,34 +1,44 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
+// README at: https://github.com/devcontainers/templates/tree/main/src/kubernetes-helm
 {
-	"name": "Ubuntu",
+	"name": "Kubernetes - Local Configuration",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/base:jammy",
+	"image": "mcr.microsoft.com/devcontainers/base:bullseye",
 
-	// Install latest python and tools (eg. pip)
 	"features": {
-		"ghcr.io/devcontainers/features/python:1": {
-			"installTools": true,
-			"version": "latest"
-		}
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+			"enableNonRootDocker": "true",
+			"moby": "true"
+		},
+		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+			"version": "latest",
+			"helm": "latest",
+			"minikube": "none"
+		},
+		"./local-features/copy-kube-config": {},
+		"ghcr.io/devcontainers/features/python:1": {}
 	},
 
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
+	"remoteEnv": {
+		"SYNC_LOCALHOST_KUBECONFIG": "true"
+	},
 
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	"initializeCommand": "cd .devcontainer && bash ensure-mount-sources",
+	"mounts": [
+		{
+			"source": "${env:HOME}${env:USERPROFILE}/.kube",
+			"target": "/usr/local/share/kube-localhost",
+			"type": "bind"
+		},
+		// Optional mount to also sync certs in your .minikube folder
+		{
+			"source": "${env:HOME}${env:USERPROFILE}/.minikube",
+			"target": "/usr/local/share/minikube-localhost",
+			"type": "bind"
+		}
+	],
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "uname -a",
-
-	// Configure tool-specific properties.
-	// "customizations": {},
-
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
-
-    "hostRequirements": {
+	"hostRequirements": {
 		"cpus": 2
 	},
 
@@ -40,4 +50,16 @@
 
 	// Use 'postStartCommand' to run commands after the container starts.
 	"postStartCommand": "/bin/bash -c .devcontainer/post-start.sh"
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "kubectl version",
+
+	// Configure tool-specific properties.
+	// "customizations": {},
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
 }
