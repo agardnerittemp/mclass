@@ -28,13 +28,15 @@ kubectl -n opentelemetry create secret generic dt-details --from-literal=DT_URL=
 kubectl apply -f gitops/platform.yml
 
 ##########################
-# 1. Install test harness dependencies
-pip install -r requirements.txt
-echo "[post-start] python requirements installed"
+# 1. Install Python and test harness dependencies
+apt install -y python3 python3-pip python3-requests
+# OS doesn't like this (see above for APT installation in format python3-MODULENAME)
+#pip install -r requirements.txt
+echo "[post-start] python, pip and requirements installed"
 
 ##########################
 # 2. Run test harness
-#python testharness.py
+#python3 testharness.py
 
 #echo "[post-start] testharness.py finished"
 
