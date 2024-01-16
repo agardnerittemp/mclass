@@ -17,10 +17,10 @@ def sendNotification(success, msg_string="", destroy_codespace=False):
 
     # If user wishes to immediately 
     if destroy_codespace:
-        print(f"Destroying codespace: {codespace_name}")
-        #codespace_name = 
+        sendNotification(success=True, msg_string=f"Destroying codespace: {codespace_name}", destroy_codespace=False)
+
         destroy_codespace_output = subprocess.run(["gh", "codespace", "delete", "--codespace", codespace_name], capture_output=True, text=True)
-        print(destroy_codespace_output)
+
         if destroy_codespace_output.returncode == 0:
             sendNotification(success=True, msg_string=f"codespace {codespace_name} deleted successfully", destroy_codespace=False)
         else:
@@ -39,7 +39,7 @@ try:
 
     if "argocd" not in output.stdout:
         sendNotification(success=False, msg_string="argocd namespace missing", destroy_codespace=True)
-        
+
 except Exception as e:
     sendNotification(success=False, msg_string=str(e), destroy_codespace=True)
 
