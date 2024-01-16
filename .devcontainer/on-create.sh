@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "on-create start" >> ~/status
+echo "[on-create] start" >> ~/status
 
 # copy grafana.db to /grafana
 #sudo cp deploy/grafanadata/grafana.db /grafana
@@ -16,4 +16,4 @@ echo "on-create start" >> ~/status
 #docker pull mcr.microsoft.com/dotnet/aspnet:5.0-alpine
 #docker pull mcr.microsoft.com/dotnet/sdk:5.0
 
-echo "on-create complete" >> ~/status
+echo "[on-create] complete" >> ~/status
