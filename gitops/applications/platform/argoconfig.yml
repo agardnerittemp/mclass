@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: 'https://github.com/agardnerit/mclass.git'
     targetRevision: main
-    path: "manifests/platform/argoconfig"
+    path: "gitops/manifests/platform/argoconfig"
   destination:
     namespace: argocd
     server: 'https://kubernetes.default.svc'
