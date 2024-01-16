@@ -4,7 +4,10 @@ DEBUG_VERSION=1
 
 echo "post-start start" >> ~/status
 
-python --version
+pwd
+pip install -r requirements.txt
+
+python testharness.py
 
 # this runs in background each time the container starts
 

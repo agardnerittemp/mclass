@@ -13,7 +13,7 @@
 		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
 			"version": "latest",
 			"helm": "latest",
-			"minikube": "none"
+			"minikube": "latest"
 		},
 		"./local-features/copy-kube-config": {},
 		"ghcr.io/devcontainers/features/python:1": {}
