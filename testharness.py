@@ -12,22 +12,17 @@ def sendNotification(success, msg_string="", destroy_codespace=False):
 
     response = requests.post(url=url, json=payload)
 
-    # TODO
     # If user wishes to immediately 
-    #if destroy_codespace:
-    # destroyCodespace()
-
-# Do not call this directly
-# Instead, use `sendNotification(..., destroy_codespace=True)`
-#def destroyCodespace():
-    # TODO
-
+    if destroy_codespace:
+        subprocess.run(["gh", "codespace", "delete", "--codespace", "$CODESPACE_NAME"], capture_output=True, text=True)
 
 #################################
 # Main test harness
 #################################
 try:
+    #########
     # Test 1: Does argocd namespace exist
+    #########
     output = subprocess.run(["kubectl", "get", "namespaces"], capture_output=True, text=True) # works
 
     if "argocd" not in output.stdout:
@@ -37,4 +32,4 @@ except Exception as e:
     sendNotification(success=False, msg_string=str(e), destroy_codespace=True)
 
 # test harness successful. Send congrats message
-sendNotification(success=True, msg_string="test harness executed successfully")
+sendNotification(success=True, msg_string="test harness executed successfully", destroy_codespace=True)
