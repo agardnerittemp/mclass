@@ -29,15 +29,16 @@ kubectl apply -f gitops/platform.yml
 
 ##########################
 # 1. Install Python and test harness dependencies
-apt install -y python3 python3-pip python3-requests
-# OS doesn't like this (see above for APT installation in format python3-MODULENAME)
-#pip install -r requirements.txt
-echo "[post-start] python, pip and requirements installed"
+sudo apt install -y python3
+sudo apt install -y python3-pip
+pip install --break-system-packages -r requirements.txt
+echo "[post-start] python and additional modules installed"
 
 ##########################
 # 2. Run test harness
-#python3 testharness.py
+export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+pytest --export-traces codespaces_test.py
 
-#echo "[post-start] testharness.py finished"
+echo "[post-start] pytest finished" >> ~/status
 
 echo "[post-start] complete" >> ~/status

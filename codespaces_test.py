@@ -2,6 +2,10 @@ import subprocess
 import requests
 import os
 import time
+import pytest
+
+# This file should be executed by pytest
+# like: 
 
 COLLECTOR_WAIT_TIMEOUT_SECONDS = 300
 opentelemetry_collector_endpoint = "http://localhost:4318"
@@ -9,9 +13,11 @@ codespace_name = os.environ.get("CODESPACE_NAME")
 dt_tenant_live = os.environ.get("DT_TENANT_LIVE")
 dt_api_token = os.environ.get("DT_ALL_INGEST_TOKEN")
 
-def sendLog(success, msg_string="", endpoint=opentelemetry_collector_endpoint, destroy_codespace=False):
+def run_command(args):
+    output = subprocess.run(args, capture_output=True, text=True)
+    return output
 
-    print(f"Sending to endpoint: {endpoint}. msg_string: {msg_string}")
+def sendLog(success, msg_string="", endpoint=opentelemetry_collector_endpoint, destroy_codespace=False):
 
     attributes_list = [{"key": "success", "value": { "boolean": success }}]
 
@@ -32,7 +38,7 @@ def sendLog(success, msg_string="", endpoint=opentelemetry_collector_endpoint, d
             "Content-Type": "application/json"
         }
 
-        resp = requests.post(f"{dt_tenant_live}/api/v2/logs/ingest", 
+        requests.post(f"{dt_tenant_live}/api/v2/logs/ingest", 
           headers = headers,
           json=payload,
           timeout=5
@@ -57,12 +63,12 @@ def sendLog(success, msg_string="", endpoint=opentelemetry_collector_endpoint, d
             }]
         }
 
-        resp = requests.post(f"{endpoint}/v1/logs", headers={ "Content-Type": "application/json" }, json=payload, timeout=5)
+        requests.post(f"{endpoint}/v1/logs", headers={ "Content-Type": "application/json" }, json=payload, timeout=5)
 
     # If user wishes to immediately
     # destroy the codespace, do it now
     # Note: Log lines inside here must have destroy_codespace=False to avoid circular calls
-    destroy_codespace = False
+    destroy_codespace = False # DEBUG: Temporarily override while developing
     if destroy_codespace:
         sendLog(success=True, msg_string=f"Destroying codespace: {codespace_name}", destroy_codespace=False)
 
@@ -73,36 +79,12 @@ def sendLog(success, msg_string="", endpoint=opentelemetry_collector_endpoint, d
         else:
             sendLog(success=False, msg_string=f"failed to delete codespace {codespace_name}. {destroy_codespace_output.stderr}", destroy_codespace=False)
 
-#################################
-# Main test harness
-#################################
-try:
-    ###########################################
-    # Test 1: Does argocd namespace exist
-    ###########################################
-    output = subprocess.run(["kubectl", "get", "namespaces"], capture_output=True, text=True)
-
-    if "argocd" not in output.stdout:
-        sendLog(success=False, msg_string="argocd namespace missing", destroy_codespace=True)
-    
-    ###########################################
-    # Test 2: Does opentelemetry namespace exist
-    ###########################################
-    if "opentelemetry" not in output.stdout:
-        sendLog(success=False, msg_string="opentelemetry namespace missing", destroy_codespace=True)
-    
-    ###########################################
-    # Test 3: Does dt-details secret exist?
-    ###########################################
-    output = subprocess.run(["kubectl", "-n", "opentelemetry", "get", "secrets"], capture_output=True, text=True)
-    
-    if "dt-details" not in output.stdout:
-        sendLog(success=False, msg_string="dt-details secret missing", destroy_codespace=True)
-    
-    ###########################################
-    # Test 4: Wait until timeout for otel collector to be available
-    # If timeout reached, send one-off log directly to cluster endpoint
-    ###########################################
+#################################################
+# TEST SUITE BEGINS
+#
+# pytest executes `test_` methods in order
+#################################################
+def test_wait_for_collector():
     count = 1
 
     COLLECTOR_AVAILABLE = False
@@ -116,7 +98,6 @@ try:
             sendLog(success=True, msg_string=f"OpenTelemetry collector available after {count} seconds. Proceed with test harness.")
             break
         else:
-            print("Collector not available yet...")
             count += 1
             time.sleep(1) # sleep for 1s
 
@@ -124,10 +105,20 @@ try:
     # Send warning directly to cluster
     if not COLLECTOR_AVAILABLE:
         sendLog(success=False, endpoint=dt_tenant_live, msg_string="OpenTelemetry collector not available. Send via direct-to-cluster ingest endpoint.", destroy_codespace=True)
-        exit()
+        raise Exception("On cluster collector is not available. Terminating codespace. Check DT for logs.")
 
-except Exception as e:
-    sendLog(success=False, msg_string=str(e), destroy_codespace=True)
+
+def test_ensure_argocd_namespace_exists():
+    output = run_command(["kubectl", "get", "namespaces"])
+    assert "argocd" in output.stdout
+
+def test_ensure_opentelemetry_namespace_exists():
+    output = run_command(["kubectl", "get", "namespaces"])
+    assert "opentelemetry" in output.stdout
+
+def test_ensure_opentelemetry_dtdetails_secret_exists():
+    output = run_command(["kubectl", "-n", "opentelemetry", "get", "secrets"])
+    assert "dt-details" in output.stdout
 
 # test harness successful. Send congrats message
 sendLog(success=True, msg_string="test harness executed successfully: v1.0.0", destroy_codespace=True)
