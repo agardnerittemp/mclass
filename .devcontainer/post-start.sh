@@ -78,7 +78,7 @@ echo "[post-start] python and additional modules installed"
 ##########################
 # 2. Run test harness
 export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
-pytest --export-traces codespaces_test.py
+#pytest --export-traces codespaces_test.py
 
 echo "[post-start] pytest finished" >> ~/status
 

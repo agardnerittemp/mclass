@@ -111,10 +111,14 @@ def test_wait_for_collector():
 def test_ensure_namespaces_exists():
     output = run_command(["kubectl", "get", "namespaces"])
     assert "argocd" in output.stdout
-    assert "opentelemetry" in output.stdout
+    assert "argo-rollouts" in output.stdout
     assert "backstage" in output.stdout
+    assert "cronjobs" in output.stdout
     assert "dynatrace" in output.stdout
+    assert "keptn" in output.stdout
+    assert "kubeaudit" in output.stdout
     assert "monaco" in output.stdout
+    assert "opentelemetry" in output.stdout
 
 def test_ensure_opentelemetry_dtdetails_secret_exists():
     output = run_command(["kubectl", "-n", "opentelemetry", "get", "secrets"])
