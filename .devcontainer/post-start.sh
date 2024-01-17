@@ -58,6 +58,13 @@ kubectl -n backstage create secret generic backstage-secrets \
   --from-literal=DT_TENANT_LIVE=$DT_TENANT_LIVE \
   --from-literal=DT_EVENT_INGEST_TOKEN=$DT_ALL_INGEST_TOKEN
 
+kubectl create namespace dynatrace
+kubectl -n dynatrace create secret generic hot-day-platform-engineering --from-literal=apiToken=$DT_OP_TOKEN --from-literal=dataIngestToken=$DT_INGEST_TOKEN
+
+kubectl create namespace monaco
+kubectl -n monaco create secret generic monaco-secret --from-literal=monacoToken=$DT_MONACO_TOKEN
+kubectl -n dynatrace create secret generic monaco-secret --from-literal=monacoToken=$DT_MONACO_TOKEN
+
 # Install platform
 kubectl apply -f gitops/platform.yml
 
