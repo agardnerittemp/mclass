@@ -48,6 +48,7 @@
 		443,
 		4317,
 		4318,
+		7007,
 		30100,
 		30101,
 		30102,
@@ -59,7 +60,8 @@
 	"portsAttributes": {
 		"80": { "label": "NginX Ingress HTTP" },
 		"443": { "label": "NginX Ingress HTTPS" },
-		"30100": { "label": "ArgoCD HTTP" },
+		"7007": { "label": "Backstage" },
+		"30100": { "label": "ArgoCD" },
 		"30101": { "label": "Grafana" },
 		"30102": { "label": "Prometheus" },
 		"30103": { "label": "DemoApp" },
