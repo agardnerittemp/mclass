@@ -25,3 +25,9 @@ echo $ARGOCDPWD
 ```
 
 Change to "Ports" tab and open ArgoCD & log in.
+
+## Observability of the Codespace
+
+The codespace self-tests on startup so look for a pytest trace showing the health.
+
+If something goes wrong setting up the codespace, logs are sent directly to the Dynatrace SaaS ingest endpoint so `fetch logs` to see what went wrong.
