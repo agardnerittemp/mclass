@@ -59,7 +59,7 @@ kubectl -n backstage create secret generic backstage-secrets \
   --from-literal=DT_EVENT_INGEST_TOKEN=$DT_ALL_INGEST_TOKEN
 
 kubectl create namespace dynatrace
-kubectl -n dynatrace create secret generic hot-day-platform-engineering --from-literal=apiToken=$DT_OP_TOKEN --from-literal=dataIngestToken=$DT_INGEST_TOKEN
+kubectl -n dynatrace create secret generic hot-day-platform-engineering --from-literal=apiToken=$DT_OP_TOKEN --from-literal=dataIngestToken=$DT_ALL_INGEST_TOKEN
 
 kubectl create namespace monaco
 kubectl -n monaco create secret generic monaco-secret --from-literal=monacoToken=$DT_MONACO_TOKEN
