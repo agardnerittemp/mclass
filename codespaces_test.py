@@ -108,13 +108,12 @@ def test_wait_for_collector():
         raise Exception("On cluster collector is not available. Terminating codespace. Check DT for logs.")
 
 
-def test_ensure_argocd_namespace_exists():
+def test_ensure_namespaces_exists():
     output = run_command(["kubectl", "get", "namespaces"])
     assert "argocd" in output.stdout
-
-def test_ensure_opentelemetry_namespace_exists():
-    output = run_command(["kubectl", "get", "namespaces"])
     assert "opentelemetry" in output.stdout
+    assert "backstage" in output.stdout
+    assert "dynatrace" in output.stdout
 
 def test_ensure_opentelemetry_dtdetails_secret_exists():
     output = run_command(["kubectl", "-n", "opentelemetry", "get", "secrets"])
