@@ -7,6 +7,14 @@ kind create cluster --config .devcontainer/kind-cluster.yml --wait 300s
 
 echo "[post-start] cluster available" >> ~/status
 
+kubectl create namespace argocd
+kubectl create namespace opentelemetry
+kubectl create namespace backstage
+kubectl create namespace dynatrace
+kubectl create namespace monaco
+
+echo "[post-start] namespaces created" >> ~/status
+
 # Download argocd CLI
 # Download the argocd CLI and authenticate
 wget -O argocd https://github.com/argoproj/argo-cd/releases/download/v2.9.3/argocd-linux-amd64
@@ -14,13 +22,11 @@ chmod +x argocd
 sudo mv argocd /usr/bin
 
 # install argocd
-kubectl create namespace argocd
 echo "[post-start] argocd namespace created" >> ~/status
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl wait --for=condition=Available=True deploy -n argocd --all --timeout=300s
 
 echo "[post-start] argocd deployed" >> ~/status
-
 
 kubectl apply -n argocd -f gitops/manifests/platform/argoconfig/argocd-no-tls.yml
 kubectl apply -n argocd -f gitops/manifests/platform/argoconfig/argocd-nodeport.yml
@@ -33,20 +39,18 @@ kubectl config set-context --current --namespace=argocd
 argocd login argo --core
 
 # Set the default context to the argocd namespace so 'argocd' CLI works
-ARGOCD_TOKEN=$(argocd account generate-token --account alice)
+export ARGOCD_TOKEN=$(argocd account generate-token --account alice)
+echo "[post-start] argocd token: $ARGOCD_TOKEN" >> ~/status
 
 # Reset kubectl context
 kubectl config set-context --current --namespace=default
 
 echo "[post-start] argocd configured and restarted" >> ~/status
 
-kubectl create namespace opentelemetry
 kubectl -n opentelemetry create secret generic dt-details \
   --from-literal=DT_URL=$DT_TENANT_LIVE \
   --from-literal=DT_OTEL_ALL_INGEST_TOKEN=$DT_ALL_INGEST_TOKEN
 
-
-kubectl create namespace backstage
 kubectl -n backstage create secret generic backstage-secrets \
   --from-literal=BASE_DOMAIN=$CODESPACE_NAME \
   --from-literal=BACKSTAGE_PORT_NUMBER=7007 \
@@ -64,10 +68,8 @@ kubectl -n backstage create secret generic backstage-secrets \
   --from-literal=DT_OAUTH_ACCOUNT_URN=$DT_OAUTH_ACCOUNT_URN \
   --from-literal=DT_EVENT_INGEST_TOKEN=$DT_ALL_INGEST_TOKEN
 
-kubectl create namespace dynatrace
 kubectl -n dynatrace create secret generic hot-day-platform-engineering --from-literal=apiToken=$DT_OP_TOKEN --from-literal=dataIngestToken=$DT_ALL_INGEST_TOKEN
 
-kubectl create namespace monaco
 kubectl -n monaco create secret generic monaco-secret --from-literal=monacoToken=$DT_MONACO_TOKEN
 kubectl -n dynatrace create secret generic monaco-secret --from-literal=monacoToken=$DT_MONACO_TOKEN
 
@@ -84,7 +86,7 @@ echo "[post-start] python and additional modules installed"
 ##########################
 # 2. Run test harness
 export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
-#pytest --export-traces codespaces_test.py
+pytest --export-traces codespaces_test.py
 
 echo "[post-start] pytest finished" >> ~/status
 
