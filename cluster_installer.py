@@ -5,6 +5,10 @@ import time
 WAIT_FOR_SECRETS_TIMEOUT = 60
 WAIT_FOR_ACCOUNTS_TIMEOUT = 60
 STANDARD_TIMEOUT="300s"
+# If any of these words are found in command execution output
+# The printing of the output to console will be suppressed
+# Add words here to block more things
+SENSITIVE_WORDS = ["secret", "secrets", "token", "tokens"]
 
 BACKSTAGE_PORT_NUMBER = 7007
 ARGOCD_PORT_NUMBER = 30100
@@ -26,6 +30,8 @@ DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
 
 # TODO: None checking the above variables
 
+
+
 def run_command(args):
     output = subprocess.run(args, capture_output=True, text=True)
 
@@ -33,8 +39,8 @@ def run_command(args):
     # Only print output if not found.
     # If found, it means the output of this command (as given in args) is expected to be sensitive
     # So do not print.
-    set1 = set(list)
-    set2 = set(list2)
+    set1 = set(args)
+    set2 = set(SENSITIVE_WORDS)
     common_elems = (set1 & set2)
     if not common_elems:
         print(output.stdout)
