@@ -28,6 +28,7 @@ DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
 
 def run_command(args):
     output = subprocess.run(args, capture_output=True, text=True)
+    print(output.stdout)
     return output
 
 # Download argocd binary
