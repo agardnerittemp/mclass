@@ -30,8 +30,6 @@ DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
 
 # TODO: None checking the above variables
 
-
-
 def run_command(args):
     output = subprocess.run(args, capture_output=True, text=True)
 
@@ -44,17 +42,15 @@ def run_command(args):
     common_elems = (set1 & set2)
     if not common_elems:
         print(output.stdout)
-    else:
-        print(f"Ignoring output of: `{args}` as it is expected to contain sensitive info.")
 
-    if output.returncode > 1 or output.stderr != "":
+    if output.returncode > 1:
         exit(f"Got an error! Return Code: {output.returncode}. Error: {output.stderr}. Exiting.")
     return output
 
 ###########################
 # TEMP AREA
 ###########################
-
+exit()
 
 # END TEMP AREA
 
@@ -121,6 +117,7 @@ output = run_command(["kubectl", "-n", "backstage", "create", "secret", "generic
                       f"--from-literal=BACKSTAGE_PORT_NUMBER={BACKSTAGE_PORT_NUMBER}",
                       f"--from-literal=ARGOCD_PORT_NUMBER={ARGOCD_PORT_NUMBER}",
                       f"--from-literal=ARGOCD_TOKEN={ARGOCD_TOKEN}",
+                      f"--from-literal=GITHUB_USER={GITHUB_USER}",
                       f"--from-literal=GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN={GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}",
                       f"--from-literal=GITHUB_TOKEN={GITHUB_TOKEN}",
                       f"--from-literal=DT_TENANT_NAME={DT_TENANT_NAME}",
