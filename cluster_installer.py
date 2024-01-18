@@ -62,7 +62,7 @@ while count < WAIT_FOR_SECRETS_TIMEOUT and "argocd-initial-admin-secret" not in 
     get_argo_secrets_output = run_command(["kubectl", "-n", "argocd", "get", "secrets"]).stdout
     time.sleep(1)
 
-ARGOCD_TOKEN = run_command(["argocd", "account", "generate-token", "--account alice"]).stdout
+ARGOCD_TOKEN = run_command(["argocd", "account", "generate-token", "--account", "alice"]).stdout
 
 if ARGOCD_TOKEN is None or ARGOCD_TOKEN == "":
     exit("ARGOCD_TOKEN is empty. Cannot proceed!")
