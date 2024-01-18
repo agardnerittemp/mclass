@@ -28,6 +28,7 @@ DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
 
 def run_command(args):
     output = subprocess.run(args, capture_output=True, text=True)
+    print(output.stdout)
     return output
 
 # Download argocd binary
@@ -68,7 +69,7 @@ while count < WAIT_FOR_SECRETS_TIMEOUT and "argocd-initial-admin-secret" not in 
 ARGOCD_TOKEN = run_command(["argocd", "account", "generate-token", "--account", "alice"]).stdout
 
 if ARGOCD_TOKEN is None or ARGOCD_TOKEN == "":
-    exit("ARGOCD_TOKEN is empty. Cannot proceed!")
+    exit(f"ARGOCD_TOKEN is empty: {ARGOCD_TOKEN}. Cannot proceed!")
 
 output = run_command(["kubectl", "config", "set-context", "--current", "--namespace=default"])
 
