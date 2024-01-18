@@ -110,6 +110,11 @@ output = run_command(["kubectl", "-n", "opentelemetry" "create" "secret" "generi
                       f"--from-literal=DT_OAUTH_ACCOUNT_URN={DT_OAUTH_ACCOUNT_URN}"
                     ])
 
+# restart backstage to pick up secret and start successfully
+output = run_command(["kubectl", "-n", "backstage", "scale", "deployment/backstage", "--replicas=0"])
+output = run_command(["kubectl", "-n", "backstage", "scale", "deployment/backstage", "--replicas=1"])
+output = run_command(["kubectl", "wait", "--for=condition=Available=True", "deployments", "-n", "backstage", "--all", f"--timeout={STANDARD_TIMEOUT}"])
+
 # Create secret for OneAgent in dynatrace namespace
 output = run_command([
     "kubectl", "-n", "dynatrace", "create", "secret", "generic", "hot-day-platform-engineering",
