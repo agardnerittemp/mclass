@@ -90,7 +90,7 @@
 	// ],
 
 	"hostRequirements": {
-		"cpus": 2
+		"cpus": 4
 	},
 
     // Use 'onCreateCommand' to run commands as part of container creation.
