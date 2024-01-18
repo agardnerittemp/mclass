@@ -28,13 +28,29 @@ DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
 
 def run_command(args):
     output = subprocess.run(args, capture_output=True, text=True)
-    print(output.stdout)
+
+    # Find common elements between blocked words and args.
+    # Only print output if not found.
+    # If found, it means the output of this command (as given in args) is expected to be sensitive
+    # So do not print.
+    set1 = set(list)
+    set2 = set(list2)
+    common_elems = (set1 & set2)
+    if not common_elems:
+        print(output.stdout)
+    else:
+        print(f"Ignoring output of: `{args}` as it is expected to contain sensitive info.")
+
+    if output.returncode > 1 or output.stderr != "":
+        exit(f"Got an error! Return Code: {output.returncode}. Error: {output.stderr}. Exiting.")
     return output
 
-# Download argocd binary
-# output = run_command(["wget", "-O", "argocd", "https://github.com/argoproj/argo-cd/releases/download/v2.9.3/argocd-linux-amd64"])
-# output = run_command(["chmod", "+x", "argocd"])
-# output = run_command(["sudo", "mv", "argocd", "/usr/bin"])
+###########################
+# TEMP AREA
+###########################
+
+
+# END TEMP AREA
 
 # Create cluster
 output = run_command(["kind", "create", "cluster", "--config", ".devcontainer/kind-cluster.yml", "--wait", STANDARD_TIMEOUT])
@@ -93,8 +109,8 @@ output = run_command(["kubectl", "config", "set-context", "--current", "--namesp
 # create dt-details secret in opentelemetry namespace
 output = run_command(["kubectl", "-n", "opentelemetry", "create", "secret", "generic", "dt-details", f"--from-literal=DT_URL={DT_TENANT_LIVE}", f"--from-literal=DT_OTEL_ALL_INGEST_TOKEN={DT_ALL_INGEST_TOKEN}"])
 
-# create backstage-details secret in opentelemetry namespace
-output = run_command(["kubectl", "-n", "opentelemetry" "create" "secret" "generic" "backstage-secrets"
+# create backstage-details secret in backstage namespace
+output = run_command(["kubectl", "-n", "backstage", "create", "secret", "generic", "backstage-secrets",
                       f"--from-literal=BASE_DOMAIN={CODESPACE_NAME}",
                       f"--from-literal=BACKSTAGE_PORT_NUMBER={BACKSTAGE_PORT_NUMBER}",
                       f"--from-literal=ARGOCD_PORT_NUMBER={ARGOCD_PORT_NUMBER}",
@@ -111,9 +127,8 @@ output = run_command(["kubectl", "-n", "opentelemetry" "create" "secret" "generi
                     ])
 
 # restart backstage to pick up secret and start successfully
-output = run_command(["kubectl", "-n", "backstage", "scale", "deployment/backstage", "--replicas=0"])
-output = run_command(["kubectl", "-n", "backstage", "scale", "deployment/backstage", "--replicas=1"])
-output = run_command(["kubectl", "wait", "--for=condition=Available=True", "deployments", "-n", "backstage", "--all", f"--timeout={STANDARD_TIMEOUT}"])
+output = run_command(["kubectl", "-n", "backstage", "rollout", "restart", "deployment/backstage"])
+output = run_command(["kubectl", "-n", "backstage", "rollout", "status", "deployment/backstage", f"--timeout={STANDARD_TIMEOUT}"])
 
 # Create secret for OneAgent in dynatrace namespace
 output = run_command([
