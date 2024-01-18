@@ -8,7 +8,7 @@ metadata:
 spec:
   source:
     path: "gitops/applications/platform"
-    repoURL: 'https://github.com/agardnerit/mclass.git'
+    repoURL: 'https://github.com/agardnerit/mclass.git' # TODO: Use placeholder and find / sed replace with env var $GITHUB_REPOSITORY
     targetRevision: main
   destination:
     namespace: argocd
