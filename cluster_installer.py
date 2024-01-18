@@ -30,6 +30,11 @@ def run_command(args):
     output = subprocess.run(args, capture_output=True, text=True)
     return output
 
+# Download argocd binary
+output = run_command(["wget", "-O", "argocd", "https://github.com/argoproj/argo-cd/releases/download/v2.9.3/argocd-linux-amd64"])
+output = run_command(["chmod", "+x", "argocd"])
+output = run_command(["sudo", "mv", "argocd", "/usr/bin"])
+
 # Create cluster
 output = run_command(["kind", "create", "cluster", "--config", ".devcontainer/kind-cluster.yml", "--wait", STANDARD_TIMEOUT])
 

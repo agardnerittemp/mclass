@@ -11,9 +11,9 @@ echo "[post-start] python and additional modules installed"
 
 # Download argocd CLI
 # Download the argocd CLI and authenticate
-wget -O argocd https://github.com/argoproj/argo-cd/releases/download/v2.9.3/argocd-linux-amd64
-chmod +x argocd
-sudo mv argocd /usr/bin
+# wget -O argocd https://github.com/argoproj/argo-cd/releases/download/v2.9.3/argocd-linux-amd64
+# chmod +x argocd
+# sudo mv argocd /usr/bin
 
 # Install and configure cluster
 python3 cluster_installer.py
