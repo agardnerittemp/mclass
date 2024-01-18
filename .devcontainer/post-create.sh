@@ -12,6 +12,10 @@ echo "[post-create] start" >> ~/status
 
 # add your commands here
 
+wget -O argocd https://github.com/argoproj/argo-cd/releases/download/v2.9.3/argocd-linux-amd64
+chmod +x argocd
+sudo mv argocd /usr/bin
+
 #echo alias k=kubectl >> /home/vscode/.zshrc
 
 echo "[post-create] complete" >> ~/status
