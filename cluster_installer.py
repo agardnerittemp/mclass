@@ -3,6 +3,7 @@ import subprocess
 import time
 
 WAIT_FOR_SECRETS_TIMEOUT = 60
+WAIT_FOR_ACCOUNTS_TIMEOUT = 60
 STANDARD_TIMEOUT="300s"
 
 BACKSTAGE_PORT_NUMBER = 7007
@@ -12,7 +13,6 @@ DT_TENANT_LIVE = os.environ.get("DT_TENANT_LIVE")
 DT_TENANT_APPS = os.environ.get("DT_TENANT_APPS")
 DT_ALL_INGEST_TOKEN = os.environ.get("DT_ALL_INGEST_TOKEN")
 CODESPACE_NAME = os.environ.get("CODESPACE_NAME")
-ARGOCD_TOKEN = os.environ.get("ARGOCD_TOKEN")
 GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN = os.environ.get("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN")
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 GITHUB_USER = os.environ.get("GITHUB_USER")
@@ -66,17 +66,29 @@ while count < WAIT_FOR_SECRETS_TIMEOUT and "argocd-initial-admin-secret" not in 
     get_argo_secrets_output = run_command(["kubectl", "-n", "argocd", "get", "secrets"]).stdout
     time.sleep(1)
 
+# Set the default context to the argocd namespace so 'argocd' CLI works
+output = run_command(["kubectl", "config", "set-context", "--current", "--namespace=argocd"])
+# Now authenticate
+output = run_command(["argocd", "login", "argo", "--core"])
+
+# Wait until argo account 'alice' exists (or timeout is hit)
+count = 1
+get_argo_accounts_output = ""
+while count < WAIT_FOR_ACCOUNTS_TIMEOUT and "alice" not in get_argo_accounts_output:
+    print(f"Waiting for argo account alice to exist. Wait count: {count}")
+    count += 1
+    get_argo_accounts_output = run_command(["argocd", "account", "list"]).stdout
+    time.sleep(1)
+
+if get_argo_accounts_output == "":
+    exit(f"ArgoCD Account alice does not exist. Cannot proceed.")
+
 ARGOCD_TOKEN = run_command(["argocd", "account", "generate-token", "--account", "alice"]).stdout
 
 if ARGOCD_TOKEN is None or ARGOCD_TOKEN == "":
     exit(f"ARGOCD_TOKEN is empty: {ARGOCD_TOKEN}. Cannot proceed!")
 
 output = run_command(["kubectl", "config", "set-context", "--current", "--namespace=default"])
-
-# Set the default context to the argocd namespace so 'argocd' CLI works
-output = run_command(["kubectl", "config", "set-context", "--current", "--namespace=argocd"])
-# Now authenticate
-output = run_command(["argocd", "login", "argo", "--core"])
 
 # create dt-details secret in opentelemetry namespace
 output = run_command(["kubectl", "-n", "opentelemetry", "create", "secret", "generic", "dt-details", f"--from-literal=DT_URL={DT_TENANT_LIVE}", f"--from-literal=DT_OTEL_ALL_INGEST_TOKEN={DT_ALL_INGEST_TOKEN}"])
