@@ -67,7 +67,7 @@
 		"30103": { "label": "DemoApp" },
 		"30104": { "label": "Jaeger" },
 		"4317": {"label": "OTEL Collector gRPC"},
-		"4318": {"label": "OTEL Collector HTTP"},
+		"4318": {"label": "OTEL Collector HTTP"}
 	},
 
 	// "remoteEnv": {
