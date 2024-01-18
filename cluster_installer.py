@@ -53,10 +53,8 @@ output = run_command(["kubectl", "apply", "-n", "argocd", "-f", "gitops/manifest
 output = run_command(["kubectl", "-n", "argocd", "rollout", "restart", "deployment/argocd-server"])
 output = run_command(["kubectl", "-n", "argocd", "rollout", "status", "deployment/argocd-server", f"--timeout={STANDARD_TIMEOUT}"])
 
-# Set the default context to the argocd namespace so 'argocd' CLI works
-output = run_command(["kubectl", "config", "set-context", "--current", "--namespace=argocd"])
-# Now authenticate
-output = run_command(["argocd", "login", "argo", "--core"])
+# Apply platform
+output = run_command(["kubectl", "apply", "-f", "gitops/platform.yml"])
 
 # Wait until argo secret exists (or timeout is hit)
 count = 1
@@ -73,6 +71,11 @@ if ARGOCD_TOKEN is None or ARGOCD_TOKEN == "":
     exit("ARGOCD_TOKEN is empty. Cannot proceed!")
 
 output = run_command(["kubectl", "config", "set-context", "--current", "--namespace=default"])
+
+# Set the default context to the argocd namespace so 'argocd' CLI works
+output = run_command(["kubectl", "config", "set-context", "--current", "--namespace=argocd"])
+# Now authenticate
+output = run_command(["argocd", "login", "argo", "--core"])
 
 # create dt-details secret in opentelemetry namespace
 output = run_command(["kubectl", "-n", "opentelemetry", "create", "secret", "generic", "dt-details", f"--from-literal=DT_URL={DT_TENANT_LIVE}", f"--from-literal=DT_OTEL_ALL_INGEST_TOKEN={DT_ALL_INGEST_TOKEN}"])
@@ -105,6 +108,3 @@ output = run_command([
 output = run_command(["kubectl", "-n", "monaco", "create", "secret", "generic", "monaco-secret", f"--from-literal=monacoToken={DT_MONACO_TOKEN}"])
 # Create monaco-secret in dynatrace namespace
 output = run_command(["kubectl", "-n", "dynatrace", "create", "secret", "generic", "monaco-secret", f"--from-literal=monacoToken={DT_MONACO_TOKEN}"])
-
-# Apply platform
-output = run_command(["kubectl", "apply", "-f", "gitops/platform.yml"])
