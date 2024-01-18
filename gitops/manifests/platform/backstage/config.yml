@@ -68,7 +68,7 @@ data:
         # Don't forget to define an integration for GitHub
         github:
           backstage:
-            organization: ${GITHUB_USER} # TODO set your organization
+            organization: ${GITHUB_USER}
             catalogPath: /catalog-info.yaml
             schedule:
               frequency: { minutes: 30 }
