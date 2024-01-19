@@ -48,7 +48,7 @@ def run_command(args):
         exit(f"Got an error! Return Code: {output.returncode}. Error: {output.stderr}. Exiting.")
     return output
 
-def do_file_replace(pattern="", placeholder="", replacement="", recursive=False):
+def do_file_replace(pattern="", find_string="", replace_string="", recursive=False):
     for filepath in glob.iglob(pattern, recursive=recursive):
         TARGET_FILE = False
         with open(filepath, "r") as file: # open file in read mode only first
@@ -74,7 +74,7 @@ def git_commit(files_command="", commit_msg="", push=False):
 
 # Find and replace DT_TENANT_LIVE_PLACEHOLDER with real text
 # Commit back to repo
-do_file_replace(pattern="./**/*.yml", placeholder="DT_TENANT_LIVE_PLACEHOLDER", replacement=DT_TENANT_LIVE, recursive=True)
+do_file_replace(pattern="./**/*.yml", find_string="DT_TENANT_LIVE_PLACEHOLDER", replace_string=DT_TENANT_LIVE, recursive=True)
 git_commit(target_files="-A", commit_msg="update DT_TENANT_LIVE_PLACEHOLDER", push=True)
 
 #output = run_command(["find", ".", "-type", "f", "\( -not -path '*/\.*' -not -iname 'README.md' \)", "-exec", "sed", "-i", f"s#DT_TENANT_LIVE_PLACEHOLDER#{DT_TENANT_LIVE}#g", "{}", "+"])
