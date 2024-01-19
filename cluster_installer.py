@@ -1,6 +1,7 @@
 import os
 import subprocess
 import time
+import glob
 
 WAIT_FOR_SECRETS_TIMEOUT = 60
 WAIT_FOR_ACCOUNTS_TIMEOUT = 60
@@ -8,7 +9,7 @@ STANDARD_TIMEOUT="300s"
 # If any of these words are found in command execution output
 # The printing of the output to console will be suppressed
 # Add words here to block more things
-SENSITIVE_WORDS = ["secret", "secrets", "token", "tokens"]
+SENSITIVE_WORDS = ["secret", "secrets", "token", "tokens", "generate-token"]
 
 BACKSTAGE_PORT_NUMBER = 7007
 ARGOCD_PORT_NUMBER = 30100
@@ -43,16 +44,45 @@ def run_command(args):
     if not common_elems:
         print(output.stdout)
 
-    if output.returncode > 1:
+    if output.returncode > 0:
         exit(f"Got an error! Return Code: {output.returncode}. Error: {output.stderr}. Exiting.")
     return output
+
+def do_file_replace(pattern="", placeholder="", replacement="", recursive=False):
+    for filepath in glob.iglob(pattern, recursive=recursive):
+        TARGET_FILE = False
+        with open(filepath, "r") as file: # open file in read mode only first
+            file_content = file.read()
+            if placeholder in file_content:
+                TARGET_FILE = True
+        # Replace the text
+        file_content = file_content.replace(placeholder, replacement)
+
+        if TARGET_FILE:
+            with open(filepath, "w") as file: # now open in write mode and write
+                file.write(file_content)
 
 ###########################
 # TEMP AREA
 ###########################
+
+# Find and replace DT_TENANT_LIVE_PLACEHOLDER with real text
+# Commit back to repo
+do_file_replace(pattern="./**/*.yml", placeholder="DT_TENANT_LIVE_PLACEHOLDER", replacement=DT_TENANT_LIVE, recursive=True)
+output = run_command(["git", "add", "-A"])
+output = run_command(["git", "commit", "-m", "update DT_TENANT_LIVE_PLACEHOLDER"])
+output = run_command(["git", "push"])
+
+#output = run_command(["find", ".", "-type", "f", "\( -not -path '*/\.*' -not -iname 'README.md' \)", "-exec", "sed", "-i", f"s#DT_TENANT_LIVE_PLACEHOLDER#{DT_TENANT_LIVE}#g", "{}", "+"])
+#print(output)
 exit()
 
 # END TEMP AREA
+
+# Find and replace placeholders
+# Commit up to repo
+
+
 
 # Create cluster
 output = run_command(["kind", "create", "cluster", "--config", ".devcontainer/kind-cluster.yml", "--wait", STANDARD_TIMEOUT])
