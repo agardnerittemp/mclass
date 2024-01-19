@@ -128,6 +128,7 @@ spec:
          doraEnabled: ${{ parameters.doraEnabled }}
          includeSecurityScans: ${{ parameters.includeSecurityScans }}
          includeDTConfig: ${{ parameters.includeDTConfig }}
+         # TESTING githubUser: 
     # - id: publish-privacy-survey
     #   name: Publish Privacy Survey
     #   action: privacySurvey:publish
@@ -163,17 +164,17 @@ spec:
     #     securityScans: ${{ parameters.includeSecurityScans }}
     #     projectName: "./${{ parameters.projectName }}-template"
     - id: publish
-      action: publish:gitlab
-      name: Publish to GitLab
+      action: publish:github
+      name: Publish to Github
       input:
-        repoUrl: "gitlab.BASE_DOMAIN_PLACEHOLDER?repo=${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd&owner=group1"
+        repoUrl: "github.com?repo=${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd&owner=agardnerit"
         sourcePath: "./${{ parameters.projectName }}-content"
         repoVisibility: 'public'
         defaultBranch: 'main'
         gitAuthorName: ${{ parameters.teamIdentifier }}
         gitAuthorEmail: "${{ parameters.teamIdentifier }}@dynatrace.training"
         gitCommitMessage: "Initial commit from ${{ parameters.teamIdentifier }} for template ${{ parameters.projectName }} in ${{ parameters.releaseStage }}"
-        topics: ["${{ parameters.projectName }}", "${{ parameters.releaseStage }}", "${{ parameters.teamIdentifier }}", "from-template", "backstage" ]
+        #topics: ["${{ parameters.projectName }}", "${{ parameters.releaseStage }}", "${{ parameters.teamIdentifier }}", "from-template", "backstage" ]
     - id: catalog
       name: Register to Catalog
       action: catalog:register
