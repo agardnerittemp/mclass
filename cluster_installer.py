@@ -49,7 +49,7 @@ def git_commit(target_file="", commit_msg="", push=False):
     if push:
         output = run_command(["git", "push"])
 
-def set_geolocation(tenant=""):
+def get_geolocation(tenant=""):
     if ".dev." in DT_TENANT_LIVE:
         return "GEOLOCATION-0A41430434C388A9"
     if ".sprint." in DT_TENANT_LIVE:
@@ -96,7 +96,7 @@ DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
 
 # Set DT GEOLOCATION based on env type used
 # TODO: Find a better way here. If this was widely used, all load would be on one GEOLOCATION.
-DT_GEOLOCATION = set_geolocation(DT_TENANT_LIVE)
+DT_GEOLOCATION = get_geolocation(DT_TENANT_LIVE)
 
 
 ###########################
