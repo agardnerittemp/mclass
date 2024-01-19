@@ -36,6 +36,7 @@ DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
 def run_command(args):
     output = subprocess.run(args, capture_output=True, text=True)
 
+    # Secure coding. Don't print sensitive info to console.
     # Find common elements between blocked words and args.
     # Only print output if not found.
     # If found, it means the output of this command (as given in args) is expected to be sensitive
@@ -46,6 +47,9 @@ def run_command(args):
     if not common_elems:
         print(output.stdout)
 
+    # Annoyingly, if git has nothing to commit
+    # it exits with a returncode == 1
+    # So ignore any git errors but exit for all others
     if "git" not in args and output.returncode > 0:
         exit(f"Got an error! Return Code: {output.returncode}. Error: {output.stderr}. Stdout: {output.stdout}. Exiting.")
     return output
