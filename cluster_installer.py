@@ -158,6 +158,10 @@ git_commit(target_file="-A", commit_msg="update GITHUB_DOT_COM_REPO_PLACEHOLDER"
 do_file_replace(pattern="./**/*.yml", find_string="GEOLOCATION_PLACEHOLDER", replace_string=DT_GEOLOCATION, recursive=True)
 git_commit(target_file="-A", commit_msg="update GEOLOCATION_PLACEHOLDER", push=True)
 
+# Find and replace GITHUB_REPOSITORY_PLACEHOLDER with real text
+do_file_replace(pattern="./**/*.yml", find_string="GITHUB_REPOSITORY_PLACEHOLDER", replace_string=GITHUB_ORG_SLASH_REPOSITORY, recursive=True)
+git_commit(target_file="-A", commit_msg="update GITHUB_REPOSITORY_PLACEHOLDER", push=True)
+
 
 # Create cluster
 output = run_command(["kind", "create", "cluster", "--config", ".devcontainer/kind-cluster.yml", "--wait", STANDARD_TIMEOUT])
