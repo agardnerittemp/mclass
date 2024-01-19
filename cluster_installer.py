@@ -70,9 +70,9 @@ def wait_for_artifact_to_exist(namespace="default", artifact_type="", artifact_n
     # if artifact does not exist, important output will be in stderr
     # if artifact DOES exist, use stdout
     if get_output.stderr != "":
-        get_output = get_deploy_output.stderr
+        get_output = get_output.stderr
     else:
-        get_output = get_deploy_output.stdout
+        get_output = get_output.stdout
 
     print(get_output)
 
