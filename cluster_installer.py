@@ -103,7 +103,7 @@ STANDARD_TIMEOUT="300s"
 # Add words here to block more things
 SENSITIVE_WORDS = ["secret", "secrets", "token", "tokens", "generate-token"]
 
-BACKSTAGE_PORT_NUMBER = 30105
+BACKSTAGE_PORT_NUMBER = 30106
 ARGOCD_PORT_NUMBER = 30100
 DT_TENANT_NAME = os.environ.get("DT_TENANT_NAME")
 DT_TENANT_LIVE = os.environ.get("DT_TENANT_LIVE")
