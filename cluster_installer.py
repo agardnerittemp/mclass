@@ -3,50 +3,10 @@ import subprocess
 import time
 import glob
 
-WAIT_FOR_SECRETS_TIMEOUT = 60
-WAIT_FOR_ACCOUNTS_TIMEOUT = 60
-STANDARD_TIMEOUT="300s"
-# If any of these words are found in command execution output
-# The printing of the output to console will be suppressed
-# Add words here to block more things
-SENSITIVE_WORDS = ["secret", "secrets", "token", "tokens", "generate-token"]
 
-BACKSTAGE_PORT_NUMBER = 7007
-ARGOCD_PORT_NUMBER = 30100
-DT_TENANT_NAME = os.environ.get("DT_TENANT_NAME")
-DT_TENANT_LIVE = os.environ.get("DT_TENANT_LIVE")
-DT_TENANT_APPS = os.environ.get("DT_TENANT_APPS")
-DT_GEOLOCATION = None
-DT_ALL_INGEST_TOKEN = os.environ.get("DT_ALL_INGEST_TOKEN")
-CODESPACE_NAME = os.environ.get("CODESPACE_NAME")
-GITHUB_ORG_SLASH_REPOSITORY = os.environ.get("GITHUB_REPOSITORY")
-GITHUB_DOT_COM_REPO = f"https://github.com/{GITHUB_ORG_SLASH_REPOSITORY}.git"
-GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN = os.environ.get("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN")
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
-GITHUB_USER = os.environ.get("GITHUB_USER")
-DT_SSO_TOKEN_URL = os.environ.get("DT_SSO_TOKEN_URL")
-DT_OAUTH_CLIENT_ID = os.environ.get("DT_OAUTH_CLIENT_ID")
-DT_OAUTH_CLIENT_SECRET = os.environ.get("DT_OAUTH_CLIENT_SECRET")
-DT_OAUTH_ACCOUNT_URN = os.environ.get("DT_OAUTH_ACCOUNT_URN")
-DT_ALL_INGEST_TOKEN = os.environ.get("DT_ALL_INGEST_TOKEN")
-DT_OP_TOKEN = os.environ.get("DT_OP_TOKEN")
-DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
-
-# Set DT GEOLOCATION based on env type used
-# TODO: Find a better way here. If this was widely used, all load would be on one GEOLOCATION.
-DT_GEOLOCATION = set_geolocation(DT_TENANT_LIVE)
-
-def set_geolocation(tenant=""):
-    if ".dev." in DT_TENANT_LIVE:
-        return "GEOLOCATION-0A41430434C388A9"
-    if ".sprint." in DT_TENANT_LIVE:
-        return "GEOLOCATION-3F7C50D0C9065578"
-    if ".live." in DT_TENANT_LIVE:
-        return "GEOLOCATION-4ACFC9B6B78D5BB1"
-    else:
-        return None
-
-# TODO: None checking the above variables
+#####################
+# FUNCTIONS
+#####################
 
 def run_command(args):
     output = subprocess.run(args, capture_output=True, text=True)
@@ -88,6 +48,56 @@ def git_commit(target_file="", commit_msg="", push=False):
     output = run_command(["git", "commit", "-m", commit_msg])
     if push:
         output = run_command(["git", "push"])
+
+def set_geolocation(tenant=""):
+    if ".dev." in DT_TENANT_LIVE:
+        return "GEOLOCATION-0A41430434C388A9"
+    if ".sprint." in DT_TENANT_LIVE:
+        return "GEOLOCATION-3F7C50D0C9065578"
+    if ".live." in DT_TENANT_LIVE:
+        return "GEOLOCATION-4ACFC9B6B78D5BB1"
+    else:
+        return None
+
+###########################################
+# INPUT VARIABLES
+###########################################
+
+WAIT_FOR_SECRETS_TIMEOUT = 60
+WAIT_FOR_ACCOUNTS_TIMEOUT = 60
+STANDARD_TIMEOUT="300s"
+# If any of these words are found in command execution output
+# The printing of the output to console will be suppressed
+# Add words here to block more things
+SENSITIVE_WORDS = ["secret", "secrets", "token", "tokens", "generate-token"]
+
+BACKSTAGE_PORT_NUMBER = 7007
+ARGOCD_PORT_NUMBER = 30100
+DT_TENANT_NAME = os.environ.get("DT_TENANT_NAME")
+DT_TENANT_LIVE = os.environ.get("DT_TENANT_LIVE")
+DT_TENANT_APPS = os.environ.get("DT_TENANT_APPS")
+DT_GEOLOCATION = None
+DT_ALL_INGEST_TOKEN = os.environ.get("DT_ALL_INGEST_TOKEN")
+CODESPACE_NAME = os.environ.get("CODESPACE_NAME")
+GITHUB_ORG_SLASH_REPOSITORY = os.environ.get("GITHUB_REPOSITORY")
+GITHUB_DOT_COM_REPO = f"https://github.com/{GITHUB_ORG_SLASH_REPOSITORY}.git"
+GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN = os.environ.get("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN")
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
+GITHUB_USER = os.environ.get("GITHUB_USER")
+DT_SSO_TOKEN_URL = os.environ.get("DT_SSO_TOKEN_URL")
+DT_OAUTH_CLIENT_ID = os.environ.get("DT_OAUTH_CLIENT_ID")
+DT_OAUTH_CLIENT_SECRET = os.environ.get("DT_OAUTH_CLIENT_SECRET")
+DT_OAUTH_ACCOUNT_URN = os.environ.get("DT_OAUTH_ACCOUNT_URN")
+DT_ALL_INGEST_TOKEN = os.environ.get("DT_ALL_INGEST_TOKEN")
+DT_OP_TOKEN = os.environ.get("DT_OP_TOKEN")
+DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
+
+# TODO: None checking the above variables
+
+# Set DT GEOLOCATION based on env type used
+# TODO: Find a better way here. If this was widely used, all load would be on one GEOLOCATION.
+DT_GEOLOCATION = set_geolocation(DT_TENANT_LIVE)
+
 
 ###########################
 # TEMP AREA
