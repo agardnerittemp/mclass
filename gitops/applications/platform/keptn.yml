@@ -14,7 +14,7 @@ spec:
       chart: klt
       # helm:
       #   values: |
-    - repoURL: 'GITHUB_DOT_COM_REPO_PLACEHOLDER'
+    - repoURL: 'https://github.com/agardnerIT/mclass.git'
       targetRevision: main
       path: "gitops/manifests/platform/keptn"
   destination:
