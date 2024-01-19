@@ -222,7 +222,7 @@ output = run_command(["kubectl", "-n", "backstage", "create", "secret", "generic
                       f"--from-literal=ARGOCD_PORT_NUMBER={ARGOCD_PORT_NUMBER}",
                       f"--from-literal=ARGOCD_TOKEN={ARGOCD_TOKEN}",
                       f"--from-literal=GITHUB_USER={GITHUB_USER}",
-                      f"--from-literal=GITHUB_USER={GITHUB_REPO_NAME}",
+                      f"--from-literal=GITHUB_REPO={GITHUB_REPO_NAME}",
                       f"--from-literal=GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN={GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}",
                       f"--from-literal=GITHUB_TOKEN={GITHUB_TOKEN}",
                       f"--from-literal=DT_TENANT_NAME={DT_TENANT_NAME}",
