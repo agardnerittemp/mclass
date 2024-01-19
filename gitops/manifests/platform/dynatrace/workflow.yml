@@ -19,7 +19,7 @@ spec:
       - name: git-files
         path: /src
         git:
-          repo: https://github.com/agardnerit/mclass.git # TODO: Use placeholder and find / sed replace with env var $GITHUB_REPOSITORY
+          repo: 'GITHUB_DOT_COM_REPO_PLACEHOLDER'
     container:
       image: dynatrace/dynatrace-configuration-as-code:latest
       args: [

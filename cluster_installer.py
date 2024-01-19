@@ -18,6 +18,8 @@ DT_TENANT_LIVE = os.environ.get("DT_TENANT_LIVE")
 DT_TENANT_APPS = os.environ.get("DT_TENANT_APPS")
 DT_ALL_INGEST_TOKEN = os.environ.get("DT_ALL_INGEST_TOKEN")
 CODESPACE_NAME = os.environ.get("CODESPACE_NAME")
+GITHUB_ORG_SLASH_REPOSITORY = os.environ.get("GITHUB_REPOSITORY")
+GITHUB_DOT_COM_REPO = f"https://github.com/{GITHUB_ORG_SLASH_REPOSITORY}.git"
 GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN = os.environ.get("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN")
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 GITHUB_USER = os.environ.get("GITHUB_USER")
@@ -62,8 +64,8 @@ def do_file_replace(pattern="", find_string="", replace_string="", recursive=Fal
             with open(filepath, "w") as file: # now open in write mode and write
                 file.write(file_content)
 
-def git_commit(files_command="", commit_msg="", push=False):
-    output = run_command(["git", "add", files_command])
+def git_commit(target_file="", commit_msg="", push=False):
+    output = run_command(["git", "add", target_file])
     output = run_command(["git", "commit", "-m", commit_msg])
     if push:
         output = run_command(["git", "push"])
@@ -75,7 +77,11 @@ def git_commit(files_command="", commit_msg="", push=False):
 # Find and replace DT_TENANT_LIVE_PLACEHOLDER with real text
 # Commit back to repo
 do_file_replace(pattern="./**/*.yml", find_string="DT_TENANT_LIVE_PLACEHOLDER", replace_string=DT_TENANT_LIVE, recursive=True)
-#git_commit(target_files="-A", commit_msg="update DT_TENANT_LIVE_PLACEHOLDER", push=True)
+git_commit(target_file="-A", commit_msg="update DT_TENANT_LIVE_PLACEHOLDER", push=True)
+
+# Find and replace DT_TENANT_APPS_PLACEHOLDER with real text
+do_file_replace(pattern="./**/*.yml", find_string="GITHUB_DOT_COM_REPO_PLACEHOLDER", replace_string=GITHUB_DOT_COM_REPO, recursive=True)
+git_commit(target_file="-A", commit_msg="update GITHUB_DOT_COM_REPO_PLACEHOLDER", push=True)
 
 #output = run_command(["find", ".", "-type", "f", "\( -not -path '*/\.*' -not -iname 'README.md' \)", "-exec", "sed", "-i", f"s#DT_TENANT_LIVE_PLACEHOLDER#{DT_TENANT_LIVE}#g", "{}", "+"])
 #print(output)
