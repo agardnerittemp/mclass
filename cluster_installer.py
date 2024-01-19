@@ -65,6 +65,7 @@ def get_geolocation(tenant=""):
 
 WAIT_FOR_SECRETS_TIMEOUT = 60
 WAIT_FOR_ACCOUNTS_TIMEOUT = 60
+
 STANDARD_TIMEOUT="300s"
 # If any of these words are found in command execution output
 # The printing of the output to console will be suppressed
@@ -106,6 +107,9 @@ DT_GEOLOCATION = get_geolocation(DT_TENANT_LIVE)
 #exit()
 
 # END TEMP AREA
+
+# Delete cluster first, in case this is a re-run
+run_command(["kind", "delete", "cluster"])
 
 # Find and replace placeholders
 # Commit up to repo
@@ -183,6 +187,9 @@ output = run_command(["kubectl", "config", "set-context", "--current", "--namesp
 
 # create dt-details secret in opentelemetry namespace
 output = run_command(["kubectl", "-n", "opentelemetry", "create", "secret", "generic", "dt-details", f"--from-literal=DT_URL={DT_TENANT_LIVE}", f"--from-literal=DT_OTEL_ALL_INGEST_TOKEN={DT_ALL_INGEST_TOKEN}"])
+
+# Wait for backstage deployment
+output = run_command(["kubectl", "wait", "--for=condition=Available=True", "deployments", "-n", "backstage", "backstage", f"--timeout={STANDARD_TIMEOUT}"])
 
 # create backstage-details secret in backstage namespace
 output = run_command(["kubectl", "-n", "backstage", "create", "secret", "generic", "backstage-secrets",
