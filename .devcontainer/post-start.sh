@@ -2,19 +2,6 @@
 
 echo "[post-start] start" >> ~/status
 
-##########################
-# 1. Install Python and test harness dependencies
-sudo apt install -y python3
-sudo apt install -y python3-pip
-pip install --break-system-packages -r requirements.txt
-echo "[post-start] python and additional modules installed"
-
-# Download argocd CLI
-# Download the argocd CLI and authenticate
-# wget -O argocd https://github.com/argoproj/argo-cd/releases/download/v2.9.3/argocd-linux-amd64
-# chmod +x argocd
-# sudo mv argocd /usr/bin
-
 # Install and configure cluster
 python3 cluster_installer.py
 
