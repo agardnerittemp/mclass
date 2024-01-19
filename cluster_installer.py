@@ -80,6 +80,10 @@ do_file_replace(pattern="./**/*.yml", find_string="DT_TENANT_LIVE_PLACEHOLDER", 
 git_commit(target_file="-A", commit_msg="update DT_TENANT_LIVE_PLACEHOLDER", push=True)
 
 # Find and replace DT_TENANT_APPS_PLACEHOLDER with real text
+do_file_replace(pattern="./**/*.yml", find_string="DT_TENANT_APPS_PLACEHOLDER", replace_string=DT_TENANT_APPS, recursive=True)
+git_commit(target_file="-A", commit_msg="update DT_TENANT_APPS_PLACEHOLDER", push=True)
+
+# Find and replace GITHUB_DOT_COM_REPO_PLACEHOLDER with real text
 do_file_replace(pattern="./**/*.yml", find_string="GITHUB_DOT_COM_REPO_PLACEHOLDER", replace_string=GITHUB_DOT_COM_REPO, recursive=True)
 git_commit(target_file="-A", commit_msg="update GITHUB_DOT_COM_REPO_PLACEHOLDER", push=True)
 
