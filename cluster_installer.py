@@ -106,6 +106,10 @@ git_commit(target_file="-A", commit_msg="update DT_TENANT_APPS_PLACEHOLDER", pus
 do_file_replace(pattern="./**/*.yml", find_string="GITHUB_DOT_COM_REPO_PLACEHOLDER", replace_string=GITHUB_DOT_COM_REPO, recursive=True)
 git_commit(target_file="-A", commit_msg="update GITHUB_DOT_COM_REPO_PLACEHOLDER", push=True)
 
+# Find and replace GEOLOCATION_PLACEHOLDER with real text
+do_file_replace(pattern="./**/*.yml", find_string="GEOLOCATION_PLACEHOLDER", replace_string=DT_GEOLOCATION, recursive=True)
+git_commit(target_file="-A", commit_msg="update GEOLOCATION_PLACEHOLDER", push=True)
+
 #output = run_command(["find", ".", "-type", "f", "\( -not -path '*/\.*' -not -iname 'README.md' \)", "-exec", "sed", "-i", f"s#DT_TENANT_LIVE_PLACEHOLDER#{DT_TENANT_LIVE}#g", "{}", "+"])
 #print(output)
 exit()
