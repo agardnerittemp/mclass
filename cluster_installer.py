@@ -46,7 +46,7 @@ def run_command(args):
     if not common_elems:
         print(output.stdout)
 
-    if output.returncode > 0:
+    if "git" not in args and output.returncode > 0:
         exit(f"Got an error! Return Code: {output.returncode}. Error: {output.stderr}. Stdout: {output.stdout}. Exiting.")
     return output
 
