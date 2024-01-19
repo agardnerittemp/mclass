@@ -183,7 +183,7 @@ spec:
         optional: true
   output:
     links:
-      - title: View on Gitlab
+      - title: View on Github
         url: ${{ steps.publish.output.remoteUrl }}
       - title: View in Catalog
         icon: catalog
@@ -257,7 +257,6 @@ spec:
         # It should actually point to the bizevent ingest
         # But I don't know how to use backstage + oAuth
         # Q in #backstage: https://cloud-native.slack.com/archives/C01B5HYR2R3/p1701406188130209
-        #path: "/proxy/webhooksite"
         path: "/proxy/dteventingest"
         #path: "/notifications"
         headers:
