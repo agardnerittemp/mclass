@@ -12,6 +12,7 @@ echo "[post-create] start" >> ~/status
 
 # add your commands here
 
+sudo apt install gh -y
 wget -O argocd https://github.com/argoproj/argo-cd/releases/download/v2.9.3/argocd-linux-amd64
 chmod +x argocd
 sudo mv argocd /usr/bin
