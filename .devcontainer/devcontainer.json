@@ -60,12 +60,12 @@
 	"portsAttributes": {
 		"80": { "label": "NginX Ingress HTTP" },
 		"443": { "label": "NginX Ingress HTTPS" },
-		"7007": { "label": "Backstage" },
 		"30100": { "label": "ArgoCD" },
 		"30101": { "label": "Grafana" },
 		"30102": { "label": "Prometheus" },
 		"30103": { "label": "DemoApp" },
 		"30104": { "label": "Jaeger" },
+		"30105": { "label": "Backstage" },
 		"4317": {"label": "OTEL Collector gRPC"},
 		"4318": {"label": "OTEL Collector HTTP"}
 	},
