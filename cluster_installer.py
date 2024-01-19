@@ -53,10 +53,10 @@ def do_file_replace(pattern="", find_string="", replace_string="", recursive=Fal
         TARGET_FILE = False
         with open(filepath, "r") as file: # open file in read mode only first
             file_content = file.read()
-            if placeholder in file_content:
+            if find_string in file_content:
                 TARGET_FILE = True
         # Replace the text
-        file_content = file_content.replace(placeholder, replacement)
+        file_content = file_content.replace(find_string, replace_string)
 
         if TARGET_FILE:
             with open(filepath, "w") as file: # now open in write mode and write
@@ -75,7 +75,7 @@ def git_commit(files_command="", commit_msg="", push=False):
 # Find and replace DT_TENANT_LIVE_PLACEHOLDER with real text
 # Commit back to repo
 do_file_replace(pattern="./**/*.yml", find_string="DT_TENANT_LIVE_PLACEHOLDER", replace_string=DT_TENANT_LIVE, recursive=True)
-git_commit(target_files="-A", commit_msg="update DT_TENANT_LIVE_PLACEHOLDER", push=True)
+#git_commit(target_files="-A", commit_msg="update DT_TENANT_LIVE_PLACEHOLDER", push=True)
 
 #output = run_command(["find", ".", "-type", "f", "\( -not -path '*/\.*' -not -iname 'README.md' \)", "-exec", "sed", "-i", f"s#DT_TENANT_LIVE_PLACEHOLDER#{DT_TENANT_LIVE}#g", "{}", "+"])
 #print(output)
