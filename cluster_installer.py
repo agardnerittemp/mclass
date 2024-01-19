@@ -8,7 +8,7 @@ import glob
 # FUNCTIONS
 #####################
 
-def run_command(args):
+def run_command(args, ignore_errors=False):
     output = subprocess.run(args, capture_output=True, text=True)
 
     # Secure coding. Don't print sensitive info to console.
@@ -25,7 +25,7 @@ def run_command(args):
     # Annoyingly, if git has nothing to commit
     # it exits with a returncode == 1
     # So ignore any git errors but exit for all others
-    if "git" not in args and output.returncode > 0:
+    if not ignore_errors and output.returncode > 0:
         exit(f"Got an error! Return Code: {output.returncode}. Error: {output.stderr}. Stdout: {output.stdout}. Exiting.")
     return output
 
@@ -44,10 +44,10 @@ def do_file_replace(pattern="", find_string="", replace_string="", recursive=Fal
                 file.write(file_content)
 
 def git_commit(target_file="", commit_msg="", push=False):
-    output = run_command(["git", "add", target_file])
-    output = run_command(["git", "commit", "-m", commit_msg])
+    output = run_command(["git", "add", target_file], ignore_errors=True)
+    output = run_command(["git", "commit", "-m", commit_msg], ignore_errors=True)
     if push:
-        output = run_command(["git", "push"])
+        output = run_command(["git", "push"], ignore_errors=True)
 
 def get_geolocation(tenant=""):
     if ".dev." in DT_TENANT_LIVE:
@@ -58,6 +58,35 @@ def get_geolocation(tenant=""):
         return "GEOLOCATION-4ACFC9B6B78D5BB1"
     else:
         return None
+
+# Whereas the kubectl wait command can be used to wait for EXISTING deployments to be READY.
+# kubectl wait will error if hte deployment DOES NOT EXIST YET.
+# This function first waits for it to even exist
+def wait_for_deployment_to_exist(namespace="default", deployment_name=""):
+    count = 1
+    get_deploy_output = run_command(["kubectl", "-n", namespace, "get", f"deployment/{deployment_name}"], ignore_errors=True)
+
+    # if deployment does not exist, important output will be in stderr
+    # if deployment DOES exist, use stdout
+    if get_deploy_output.stderr != "":
+        get_deploy_output = get_deploy_output.stderr
+    else:
+        get_deploy_output = get_deploy_output.stdout
+
+    print(get_deploy_output)
+
+    while count < WAIT_FOR_DEPLOYMENTS_TIMEOUT and "not found" in get_deploy_output:
+        print(f"Waiting for deployment {deployment_name} in {namespace} to exist. Wait count: {count}")
+        count += 1
+        get_deploy_output = run_command(["kubectl", "-n", namespace, "get", "deployment/backstage2"], ignore_errors=True)
+        # if deployment does not exist, important output will be in stderr
+        # if deployment DOES exist, use stdout
+        if get_deploy_output.stderr != "":
+            get_deploy_output = get_deploy_output.stderr
+        else:
+            get_deploy_output = get_deploy_output.stdout
+        print(get_deploy_output)
+        time.sleep(1)
 
 ###########################################
 # INPUT VARIABLES
@@ -100,12 +129,9 @@ DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
 # TODO: Find a better way here. If this was widely used, all load would be on one GEOLOCATION.
 DT_GEOLOCATION = get_geolocation(DT_TENANT_LIVE)
 
-
 ###########################
 # TEMP AREA
 ###########################
-
-#exit()
 
 # END TEMP AREA
 
@@ -208,16 +234,9 @@ output = run_command(["kubectl", "-n", "backstage", "create", "secret", "generic
                     ])
 
 # Wait for backstage deployment to be created
+wait_for_deployment_to_exist(namespace="backstage", deployment_name="backstage")
+
 # Then wait for it to be ready
-count = 1
-backstage_get_deploy_output = run_command(["kubectl", "-n", "backstage", "get", "deployment/backstage"])
-
-while count < WAIT_FOR_DEPLOYMENTS_TIMEOUT and "not found" in backstage_get_deploy_output:
-    print(f"Waiting for backstage deployment to exist. Wait count: {count}")
-    count += 1
-    backstage_get_deploy_output = run_command(["kubectl", "-n", "backstage", "get", "deployment/backstage"]).stdout
-    time.sleep(1)
-
 output = run_command(["kubectl", "wait", "--for=condition=Available=True", "deployments", "-n", "backstage", "backstage", f"--timeout={STANDARD_TIMEOUT}"])
 
 # backstage deployment is ready
