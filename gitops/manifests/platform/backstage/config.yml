@@ -70,9 +70,9 @@ data:
           backstage:
             organization: ${GITHUB_USER}
             catalogPath: /catalog-info.yaml
-            filters:
-              branch: "main"
-              repository: ".*"
+            # filters:
+            #   branch: "main"
+            #   repository: ".*"
             schedule:
               frequency: { minutes: 5 }
               timeout: { minutes: 3 }
