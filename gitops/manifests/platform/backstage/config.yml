@@ -71,8 +71,9 @@ data:
             organization: ${GITHUB_USER}
             repository: ".*"
             catalogPath: '**/catalog-info.yaml' # this will search recursively all folders for catalog-info.yaml files
-            topic:
-              include: ['dt-tutorial', 'dt-devrel', 'backstage'] # optional array of strings
+            filters:
+              topic:
+                include: ['dt-tutorial', 'dt-devrel', 'backstage'] # optional array of strings
             # filters:
             #   branch: "main"
             #   repository: ".*"
