@@ -9,6 +9,6 @@ spec:
     app: backstage
   ports:
     - name: http
-      port: 7007
-      targetPort: http
-      nodePort: 30106
+      port: 30105
+      targetPort: 7007
+      nodePort: 30105

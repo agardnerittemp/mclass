@@ -44,8 +44,6 @@
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [
-		80,
-		443,
 		4317,
 		4318,
 		30100,
@@ -53,19 +51,17 @@
 		30102,
 		30103,
 		30104,
-		30106
+		30105
 	],
 
 	// add labels
 	"portsAttributes": {
-		"80": { "label": "NginX Ingress HTTP" },
-		"443": { "label": "NginX Ingress HTTPS" },
 		"30100": { "label": "ArgoCD" },
 		"30101": { "label": "Grafana" },
 		"30102": { "label": "Prometheus" },
 		"30103": { "label": "DemoApp" },
 		"30104": { "label": "Jaeger" },
-		"30106": { "label": "Backstage" },
+		"30105": { "label": "Backstage" },
 		"4317": {"label": "OTEL Collector gRPC"},
 		"4318": {"label": "OTEL Collector HTTP"}
 	},

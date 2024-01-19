@@ -35,5 +35,5 @@ nodes:
     containerPort: 4317
   - hostPort: 4318
     containerPort: 4318  
-  - hostPort: 30106
-    containerPort: 30106
+  - hostPort: 30105
+    containerPort: 30105
