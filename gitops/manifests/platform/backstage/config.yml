@@ -72,7 +72,7 @@ data:
             repository: ".*"
             catalogPath: '**/catalog-info.yaml' # this will search recursively all folders for catalog-info.yaml files
             filters:
-              repository: '.*mclass.*'
+              repository: 'mclass'
             # filters:
             #   branch: "main"
             #   repository: ".*"
