@@ -103,6 +103,12 @@ DT_GEOLOCATION = get_geolocation(DT_TENANT_LIVE)
 # TEMP AREA
 ###########################
 
+#exit()
+
+# END TEMP AREA
+
+# Find and replace placeholders
+# Commit up to repo
 # Find and replace DT_TENANT_LIVE_PLACEHOLDER with real text
 # Commit back to repo
 do_file_replace(pattern="./**/*.yml", find_string="DT_TENANT_LIVE_PLACEHOLDER", replace_string=DT_TENANT_LIVE, recursive=True)
@@ -119,16 +125,6 @@ git_commit(target_file="-A", commit_msg="update GITHUB_DOT_COM_REPO_PLACEHOLDER"
 # Find and replace GEOLOCATION_PLACEHOLDER with real text
 do_file_replace(pattern="./**/*.yml", find_string="GEOLOCATION_PLACEHOLDER", replace_string=DT_GEOLOCATION, recursive=True)
 git_commit(target_file="-A", commit_msg="update GEOLOCATION_PLACEHOLDER", push=True)
-
-#output = run_command(["find", ".", "-type", "f", "\( -not -path '*/\.*' -not -iname 'README.md' \)", "-exec", "sed", "-i", f"s#DT_TENANT_LIVE_PLACEHOLDER#{DT_TENANT_LIVE}#g", "{}", "+"])
-#print(output)
-exit()
-
-# END TEMP AREA
-
-# Find and replace placeholders
-# Commit up to repo
-
 
 
 # Create cluster
