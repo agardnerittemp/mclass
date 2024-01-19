@@ -128,19 +128,14 @@ DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
 
 # TODO: None checking the above variables
 
-INSTALL_KEPTN_ENV = os.environ.get("INSTALL_KEPTN", "false")
+INSTALL_KEPTN = os.environ.get("INSTALL_KEPTN", "true")
 
-INSTALL_KEPTN = False
-if INSTALL_KEPTN_ENV.lower() == "true" or INSTALL_KEPTN_ENV.lower() == "yes":
-    INSTALL_KEPTN = True
-else:
+if INSTALL_KEPTN.lower() == "false" or INSTALL_KEPTN.lower() == "no":
     # Rename files to prevent installation by argoCD
     os.rename(src="gitops/applications/platform/keptn.yml", dst="gitops/applications/platform/keptn.yml.BAK")
     os.rename(src="gitops/manifests/platform/keptn/keptn-metrics.yml", dst="gitops/manifests/platform/keptn/keptn-metrics.yml.BAK")
     os.rename(src="gitops/manifests/platform/keptn/otelcol-keptnconfig.yml", dst="gitops/manifests/platform/keptn/otelcol-keptnconfig.yml.BAK")
     git_commit(target_file="-A", commit_msg="do not install Keptn", push=True)
-
-
 
 # Set DT GEOLOCATION based on env type used
 # TODO: Find a better way here. If this was widely used, all load would be on one GEOLOCATION.
