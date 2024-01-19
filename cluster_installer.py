@@ -111,7 +111,8 @@ DT_TENANT_APPS = os.environ.get("DT_TENANT_APPS")
 DT_GEOLOCATION = None
 DT_ALL_INGEST_TOKEN = os.environ.get("DT_ALL_INGEST_TOKEN")
 CODESPACE_NAME = os.environ.get("CODESPACE_NAME")
-GITHUB_ORG_SLASH_REPOSITORY = os.environ.get("GITHUB_REPOSITORY")
+GITHUB_ORG_SLASH_REPOSITORY = os.environ.get("GITHUB_REPOSITORY") # eg. agardnerIT/mclass
+GITHUB_REPO_NAME = os.environ.get("RepositoryName") # eg. mclass
 GITHUB_DOT_COM_REPO = f"https://github.com/{GITHUB_ORG_SLASH_REPOSITORY}.git"
 GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN = os.environ.get("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN")
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
@@ -221,6 +222,7 @@ output = run_command(["kubectl", "-n", "backstage", "create", "secret", "generic
                       f"--from-literal=ARGOCD_PORT_NUMBER={ARGOCD_PORT_NUMBER}",
                       f"--from-literal=ARGOCD_TOKEN={ARGOCD_TOKEN}",
                       f"--from-literal=GITHUB_USER={GITHUB_USER}",
+                      f"--from-literal=GITHUB_USER={GITHUB_REPO_NAME}",
                       f"--from-literal=GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN={GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}",
                       f"--from-literal=GITHUB_TOKEN={GITHUB_TOKEN}",
                       f"--from-literal=DT_TENANT_NAME={DT_TENANT_NAME}",
