@@ -59,33 +59,34 @@ def get_geolocation(tenant=""):
     else:
         return None
 
-# Whereas the kubectl wait command can be used to wait for EXISTING deployments to be READY.
-# kubectl wait will error if hte deployment DOES NOT EXIST YET.
+# Whereas the kubectl wait command can be used to wait for EXISTING artifacts (eg. deployments) to be READY.
+# kubectl wait will error if the artifact DOES NOT EXIST YET.
 # This function first waits for it to even exist
-def wait_for_deployment_to_exist(namespace="default", deployment_name=""):
+# eg. wait_for_artifact_to_exist(namespace="default", artifact_type="deployment", artifact_name="backstage")
+def wait_for_artifact_to_exist(namespace="default", artifact_type="", artifact_name=""):
     count = 1
-    get_deploy_output = run_command(["kubectl", "-n", namespace, "get", f"deployment/{deployment_name}"], ignore_errors=True)
+    get_output = run_command(["kubectl", "-n", namespace, "get", f"{artifact_type}/{artifact_name}"], ignore_errors=True)
 
-    # if deployment does not exist, important output will be in stderr
-    # if deployment DOES exist, use stdout
-    if get_deploy_output.stderr != "":
-        get_deploy_output = get_deploy_output.stderr
+    # if artifact does not exist, important output will be in stderr
+    # if artifact DOES exist, use stdout
+    if get_output.stderr != "":
+        get_output = get_output.stderr
     else:
-        get_deploy_output = get_deploy_output.stdout
+        get_output = get_output.stdout
 
-    print(get_deploy_output)
+    print(get_output)
 
-    while count < WAIT_FOR_DEPLOYMENTS_TIMEOUT and "not found" in get_deploy_output:
-        print(f"Waiting for deployment {deployment_name} in {namespace} to exist. Wait count: {count}")
+    while count < WAIT_FOR_ARTIFACT_TIMEOUT and "not found" in get_output:
+        print(f"Waiting for {artifact_type}/{artifact_name} in {namespace} to exist. Wait count: {count}")
         count += 1
-        get_deploy_output = run_command(["kubectl", "-n", namespace, "get", "deployment/backstage2"], ignore_errors=True)
-        # if deployment does not exist, important output will be in stderr
-        # if deployment DOES exist, use stdout
-        if get_deploy_output.stderr != "":
-            get_deploy_output = get_deploy_output.stderr
+        get_output = run_command(["kubectl", "-n", namespace, "get", f"{artifact_type}/{artifact_name}"], ignore_errors=True)
+        # if artifact does not exist, important output will be in stderr
+        # if artifact DOES exist, use stdout
+        if get_output.stderr != "":
+            get_output = get_output.stderr
         else:
-            get_deploy_output = get_deploy_output.stdout
-        print(get_deploy_output)
+            get_output = get_output.stdout
+        print(get_output)
         time.sleep(1)
 
 ###########################################
@@ -94,7 +95,7 @@ def wait_for_deployment_to_exist(namespace="default", deployment_name=""):
 
 WAIT_FOR_SECRETS_TIMEOUT = 60
 WAIT_FOR_ACCOUNTS_TIMEOUT = 60
-WAIT_FOR_DEPLOYMENTS_TIMEOUT = 60
+WAIT_FOR_ARTIFACT_TIMEOUT = 60
 
 STANDARD_TIMEOUT="300s"
 # If any of these words are found in command execution output
@@ -180,13 +181,7 @@ output = run_command(["kubectl", "-n", "argocd", "rollout", "status", "deploymen
 output = run_command(["kubectl", "apply", "-f", "gitops/platform.yml"])
 
 # Wait until argo secret exists (or timeout is hit)
-count = 1
-get_argo_secrets_output = ""
-while count < WAIT_FOR_SECRETS_TIMEOUT and "argocd-initial-admin-secret" not in get_argo_secrets_output:
-    print(f"Waiting for argo secret. Wait count: {count}")
-    count += 1
-    get_argo_secrets_output = run_command(["kubectl", "-n", "argocd", "get", "secrets"]).stdout
-    time.sleep(1)
+wait_for_artifact_to_exist(namespace="argocd", artifact_type="secret", artifact_name="argocd-initial-admin-secret")
 
 # Set the default context to the argocd namespace so 'argocd' CLI works
 output = run_command(["kubectl", "config", "set-context", "--current", "--namespace=argocd"])
@@ -234,7 +229,8 @@ output = run_command(["kubectl", "-n", "backstage", "create", "secret", "generic
                     ])
 
 # Wait for backstage deployment to be created
-wait_for_deployment_to_exist(namespace="backstage", deployment_name="backstage")
+wait_for_artifact_to_exist(namespace="backstage", artifact_type="deployment", artifact_name="backstage")
+#wait_for_deployment_to_exist(namespace="backstage", deployment_name="backstage")
 
 # Then wait for it to be ready
 output = run_command(["kubectl", "wait", "--for=condition=Available=True", "deployments", "-n", "backstage", "backstage", f"--timeout={STANDARD_TIMEOUT}"])
