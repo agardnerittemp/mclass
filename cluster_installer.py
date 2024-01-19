@@ -47,7 +47,7 @@ def run_command(args):
         print(output.stdout)
 
     if output.returncode > 0:
-        exit(f"Got an error! Return Code: {output.returncode}. Error: {output.stderr}. Stdout: {output.stdout} .Exiting.")
+        exit(f"Got an error! Return Code: {output.returncode}. Error: {output.stderr}. Stdout: {output.stdout}. Exiting.")
     return output
 
 def do_file_replace(pattern="", find_string="", replace_string="", recursive=False):
