@@ -69,7 +69,7 @@ data:
         github:
           backstage:
             organization: ${GITHUB_USER}
-            repository: ".*"
+            repository: "mclass"
             catalogPath: '**/catalog-info.yaml' # this will search recursively all folders for catalog-info.yaml files
             #filters:
             #  repository: 'mclass'
