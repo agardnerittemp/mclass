@@ -65,6 +65,7 @@ def get_geolocation(tenant=""):
 
 WAIT_FOR_SECRETS_TIMEOUT = 60
 WAIT_FOR_ACCOUNTS_TIMEOUT = 60
+WAIT_FOR_DEPLOYMENTS_TIMEOUT = 60
 
 STANDARD_TIMEOUT="300s"
 # If any of these words are found in command execution output
@@ -188,9 +189,6 @@ output = run_command(["kubectl", "config", "set-context", "--current", "--namesp
 # create dt-details secret in opentelemetry namespace
 output = run_command(["kubectl", "-n", "opentelemetry", "create", "secret", "generic", "dt-details", f"--from-literal=DT_URL={DT_TENANT_LIVE}", f"--from-literal=DT_OTEL_ALL_INGEST_TOKEN={DT_ALL_INGEST_TOKEN}"])
 
-# Wait for backstage deployment
-output = run_command(["kubectl", "wait", "--for=condition=Available=True", "deployments", "-n", "backstage", "backstage", f"--timeout={STANDARD_TIMEOUT}"])
-
 # create backstage-details secret in backstage namespace
 output = run_command(["kubectl", "-n", "backstage", "create", "secret", "generic", "backstage-secrets",
                       f"--from-literal=BASE_DOMAIN={CODESPACE_NAME}",
@@ -209,6 +207,20 @@ output = run_command(["kubectl", "-n", "backstage", "create", "secret", "generic
                       f"--from-literal=DT_OAUTH_ACCOUNT_URN={DT_OAUTH_ACCOUNT_URN}"
                     ])
 
+# Wait for backstage deployment to be created
+# Then wait for it to be ready
+count = 1
+backstage_get_deploy_output = run_command(["kubectl", "-n", "backstage", "get", "deployment/backstage"])
+
+while count < WAIT_FOR_DEPLOYMENTS_TIMEOUT and "not found" in backstage_get_deploy_output:
+    print(f"Waiting for backstage deployment to exist. Wait count: {count}")
+    count += 1
+    backstage_get_deploy_output = run_command(["kubectl", "-n", "backstage", "get", "deployment/backstage"]).stdout
+    time.sleep(1)
+
+output = run_command(["kubectl", "wait", "--for=condition=Available=True", "deployments", "-n", "backstage", "backstage", f"--timeout={STANDARD_TIMEOUT}"])
+
+# backstage deployment is ready
 # restart backstage to pick up secret and start successfully
 output = run_command(["kubectl", "-n", "backstage", "rollout", "restart", "deployment/backstage"])
 output = run_command(["kubectl", "-n", "backstage", "rollout", "status", "deployment/backstage", f"--timeout={STANDARD_TIMEOUT}"])
