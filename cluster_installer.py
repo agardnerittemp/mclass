@@ -62,6 +62,12 @@ def do_file_replace(pattern="", placeholder="", replacement="", recursive=False)
             with open(filepath, "w") as file: # now open in write mode and write
                 file.write(file_content)
 
+def git_commit(files_command="", commit_msg="", push=False):
+    output = run_command(["git", "add", files_command])
+    output = run_command(["git", "commit", "-m", commit_msg])
+    if push:
+        output = run_command(["git", "push"])
+
 ###########################
 # TEMP AREA
 ###########################
@@ -69,9 +75,7 @@ def do_file_replace(pattern="", placeholder="", replacement="", recursive=False)
 # Find and replace DT_TENANT_LIVE_PLACEHOLDER with real text
 # Commit back to repo
 do_file_replace(pattern="./**/*.yml", placeholder="DT_TENANT_LIVE_PLACEHOLDER", replacement=DT_TENANT_LIVE, recursive=True)
-output = run_command(["git", "add", "-A"])
-output = run_command(["git", "commit", "-m", "update DT_TENANT_LIVE_PLACEHOLDER"])
-output = run_command(["git", "push"])
+git_commit(target_files="-A", commit_msg="update DT_TENANT_LIVE_PLACEHOLDER", push=True)
 
 #output = run_command(["find", ".", "-type", "f", "\( -not -path '*/\.*' -not -iname 'README.md' \)", "-exec", "sed", "-i", f"s#DT_TENANT_LIVE_PLACEHOLDER#{DT_TENANT_LIVE}#g", "{}", "+"])
 #print(output)
