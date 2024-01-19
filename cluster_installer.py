@@ -16,6 +16,7 @@ ARGOCD_PORT_NUMBER = 30100
 DT_TENANT_NAME = os.environ.get("DT_TENANT_NAME")
 DT_TENANT_LIVE = os.environ.get("DT_TENANT_LIVE")
 DT_TENANT_APPS = os.environ.get("DT_TENANT_APPS")
+DT_GEOLOCATION = None
 DT_ALL_INGEST_TOKEN = os.environ.get("DT_ALL_INGEST_TOKEN")
 CODESPACE_NAME = os.environ.get("CODESPACE_NAME")
 GITHUB_ORG_SLASH_REPOSITORY = os.environ.get("GITHUB_REPOSITORY")
@@ -30,6 +31,20 @@ DT_OAUTH_ACCOUNT_URN = os.environ.get("DT_OAUTH_ACCOUNT_URN")
 DT_ALL_INGEST_TOKEN = os.environ.get("DT_ALL_INGEST_TOKEN")
 DT_OP_TOKEN = os.environ.get("DT_OP_TOKEN")
 DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
+
+# Set DT GEOLOCATION based on env type used
+# TODO: Find a better way here. If this was widely used, all load would be on one GEOLOCATION.
+DT_GEOLOCATION = set_geolocation(DT_TENANT_LIVE)
+
+def set_geolocation(tenant=""):
+    if ".dev." in DT_TENANT_LIVE:
+        return "GEOLOCATION-0A41430434C388A9"
+    if ".sprint." in DT_TENANT_LIVE:
+        return "GEOLOCATION-3F7C50D0C9065578"
+    if ".live." in DT_TENANT_LIVE:
+        return "GEOLOCATION-4ACFC9B6B78D5BB1"
+    else:
+        return None
 
 # TODO: None checking the above variables
 
