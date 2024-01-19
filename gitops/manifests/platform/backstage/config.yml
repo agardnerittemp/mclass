@@ -74,7 +74,7 @@ data:
               branch: "main"
               repository: ".*"
             schedule:
-              frequency: { minutes: 1 }
+              frequency: { minutes: 5 }
               timeout: { minutes: 3 }
         # GitLab discovery: https://backstage.io/docs/integrations/gitlab/discovery/
         # Don't forget to define an integration for your GitLab host(s)
