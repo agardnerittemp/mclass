@@ -167,7 +167,7 @@ spec:
       action: publish:github
       name: Publish to Github
       input:
-        repoUrl: "github.com?repo=${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd&owner=agardnerit"
+        repoUrl: "github.com?repo=${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd&owner=agardnerIT"
         sourcePath: "./${{ parameters.projectName }}-content"
         repoVisibility: 'public'
         defaultBranch: 'main'
