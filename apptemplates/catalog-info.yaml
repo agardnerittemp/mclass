@@ -51,6 +51,11 @@ spec:
           description: Email to reach your team (eg. team01@dynatrace.training)
           type: string
           ui:placeholder: 'teamEmail'
+        githubOrg:
+          title: GitHub Organization Name
+          description: The name of the GitHub organization you created to hold new projects
+          type: string
+          ui:placeholder: 'githubOrg'
     - title: Application Details
       required:
         - appVersion
@@ -88,29 +93,6 @@ spec:
           description: "Include level 1 (basic) Dynatrace Configuration as Code for this application?"
           type: boolean
           default: true
-        # includeComponentB:
-        #   title: Include Component B
-        #   description: Whether to include files for Component B
-        #   type: boolean
-        #   default: false
-    # - title: Privacy Survey
-    #   properties:
-    #     privacySurvey:
-    #       type: object
-    #       ui:field: PrivacySurvey
-    # - title: Choose a location
-    #   required:
-    #     - repoUrl
-    #   properties:
-    #     repoUrl:
-    #       title: Repository Location
-    #       type: string
-    #       ui:field: RepoUrlPicker
-    #       ui:options:
-    #         allowedHosts:
-    #           - gitlab.BASE_DOMAIN_PLACEHOLDER
-    #         #requestUserCredentials:
-    #         #  secretsKey: USER_OAUTH_TOKEN
   steps:
     - id: fetch-base
       name: Fetch Base
@@ -167,7 +149,7 @@ spec:
       action: publish:github
       name: Publish to Github
       input:
-        repoUrl: "github.com?repo=${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd&owner=agardnerIT"
+        repoUrl: "github.com?repo=${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd&owner=${{ parameters.githubOrg }}"
         sourcePath: "./${{ parameters.projectName }}-content"
         repoVisibility: 'public'
         defaultBranch: 'main'
