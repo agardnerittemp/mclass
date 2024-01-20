@@ -16,6 +16,25 @@ In your fork. Go to: "Settings > Secrets and variables > codespaces". Create sec
 - `DT_TENANT_LIVE`
 - `DT_TENANT_NAME`
 
+## Run without Keptn
+
+In your forked repository, go to: "Settings > Secrets and variables > Codespaces"
+
+Create a secret called (case sensitive): `INSTALL_KEPTN`
+
+Set the value to `false`.
+
+The demo can run with 2 CPU.
+
+[Create a codespace now](https://github.com/codespaces/new)
+
+## Run with Keptn
+
+The demo needs 4 CPU.
+
+[Create a codespace now](https://github.com/codespaces/new)
+
+## Instructions (in progress)
 
 Wait until the `Running postStartCommand...` disappears. It should take 3-4 minutes.
 
