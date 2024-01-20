@@ -156,6 +156,7 @@ spec:
         gitAuthorName: ${{ parameters.teamIdentifier }}
         gitAuthorEmail: "${{ parameters.teamIdentifier }}@dynatrace.training"
         gitCommitMessage: "Initial commit from ${{ parameters.teamIdentifier }} for template ${{ parameters.projectName }} in ${{ parameters.releaseStage }}"
+        protectDefaultBranch: false
         #topics: ["${{ parameters.projectName }}", "${{ parameters.releaseStage }}", "${{ parameters.teamIdentifier }}", "from-template", "backstage" ]
     - id: catalog
       name: Register to Catalog
