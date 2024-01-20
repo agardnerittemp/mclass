@@ -1,6 +1,7 @@
 # mclass
 
-Fork this repo.
+- [Create a free GitHub organization](https://github.com/account/organizations/new?plan=free)
+- Fork this repo.
 
 In your fork. Go to: "Settings > Secrets and variables > codespaces". Create secrets with these EXACT names:
 
