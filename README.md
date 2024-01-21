@@ -18,15 +18,12 @@ In your fork, go to: "Settings > Secrets and variables > codespaces".
 
 Create secrets with these EXACT names.
 
-- `DT_ALL_INGEST_TOKEN`
-- `DT_MONACO_TOKEN`
+- `DT_RW_API_TOKEN` - A DT API token with `apiTokens.write` and `apiTokens.read` permissions.
+- `DT_ENV_NAME` eg. `abc12345`
+- (optional) `DT_ENV` eg. `dev`, `sprint` or `live`. Defaults to `live`
 - `DT_OAUTH_ACCOUNT_URN`
 - `DT_OAUTH_CLIENT_ID`
 - `DT_OAUTH_CLIENT_SECRET`
-- `DT_OP_TOKEN`
-- `DT_TENANT_APPS`
-- `DT_TENANT_LIVE`
-- `DT_TENANT_NAME`
 
 ## Run without Keptn
 
