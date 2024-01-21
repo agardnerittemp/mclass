@@ -24,7 +24,6 @@ Create secrets with these EXACT names.
 - `DT_OAUTH_CLIENT_ID`
 - `DT_OAUTH_CLIENT_SECRET`
 - `DT_OP_TOKEN`
-- `DT_SSO_TOKEN_URL`
 - `DT_TENANT_APPS`
 - `DT_TENANT_LIVE`
 - `DT_TENANT_NAME`

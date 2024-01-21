@@ -117,7 +117,6 @@ GITHUB_DOT_COM_REPO = f"https://github.com/{GITHUB_ORG_SLASH_REPOSITORY}.git"
 GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN = os.environ.get("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN")
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 GITHUB_USER = os.environ.get("GITHUB_USER")
-DT_SSO_TOKEN_URL = os.environ.get("DT_SSO_TOKEN_URL")
 DT_OAUTH_CLIENT_ID = os.environ.get("DT_OAUTH_CLIENT_ID")
 DT_OAUTH_CLIENT_SECRET = os.environ.get("DT_OAUTH_CLIENT_SECRET")
 DT_OAUTH_ACCOUNT_URN = os.environ.get("DT_OAUTH_ACCOUNT_URN")
@@ -134,9 +133,25 @@ DT_TENANT_APPS = DT_TENANT_APPS.rstrip("/")
 # Derive DT_TENANT_NAME from DT URL
 name_start_pos = DT_TENANT_LIVE.rindex("/")+1
 name_end_pos = DT_TENANT_LIVE.index(".")
-
 DT_TENANT_NAME = DT_TENANT_LIVE[name_start_pos:name_end_pos]
 
+# Set correct SSO URL
+# Do so dynamically based on current DT environment
+# DT environment is derived from URL
+# These endpoints won't (often) change (if at all)
+OAUTH_DEV_ENDPOINT = "https://sso-dev.dynatracelabs.com/sso/oauth2/token"
+OAUTH_SPRINT_ENDPOINT = "https://sso-sprint.dynatracelabs.com/sso/oauth2/token"
+OAUTH_PROD_ENDPOINT = "https://sso.dynatrace.com/sso/oauth2/token"
+
+# default to "prod"
+DT_SSO_TOKEN_URL =  OAUTH_PROD_ENDPOINT
+
+if ".dev." in DT_TENANT_APPS.lower():
+    DT_SSO_TOKEN_URL = OAUTH_DEV_ENDPOINT
+if ".sprint." in DT_TENANT_APPS.lower():
+    DT_SSO_TOKEN_URL = OAUTH_SPRINT_ENDPOINT
+
+# Should Keptn be installed or not?
 INSTALL_KEPTN = os.environ.get("INSTALL_KEPTN", "true")
 
 if INSTALL_KEPTN.lower() == "false" or INSTALL_KEPTN.lower() == "no":
