@@ -1,6 +1,6 @@
 # mclass
 
-##  Cretae a GitHub Organization
+##  Create a GitHub Organization
 
 [Create a free GitHub organization](https://github.com/account/organizations/new?plan=free)
 
