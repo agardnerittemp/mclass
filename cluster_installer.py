@@ -40,9 +40,10 @@ if (
 
 # Build DT environment URLs
 DT_TENANT_APPS, DT_TENANT_LIVE = build_dt_urls(dt_env_name=DT_ENV_NAME, dt_env=DT_ENV)
-
+print(f"DT_TENANT_APPS: {DT_TENANT_APPS}. DT_TENANT_LIVE: {DT_TENANT_LIVE}")
 # Get correct SSO URL
 DT_SSO_TOKEN_URL = get_sso_token_url(dt_env=DT_ENV)
+print(f"DT_SSO_TOKEN_URL: {DT_SSO_TOKEN_URL}")
 
 # Create other DT tokens
 DT_ALL_INGEST_TOKEN = create_dt_api_token(token_name="[devrel demo] DT_ALL_INGEST_TOKEN", scopes=[
@@ -88,25 +89,26 @@ run_command(["kind", "delete", "cluster"])
 # Commit up to repo
 # Find and replace DT_TENANT_LIVE_PLACEHOLDER with real text
 # Commit back to repo
+# Push = False for the first set
+# because we push on the final git commit
 do_file_replace(pattern="./**/*.yml", find_string="DT_TENANT_LIVE_PLACEHOLDER", replace_string=DT_TENANT_LIVE, recursive=True)
-git_commit(target_file="-A", commit_msg="update DT_TENANT_LIVE_PLACEHOLDER", push=True)
+git_commit(target_file="-A", commit_msg="update DT_TENANT_LIVE_PLACEHOLDER", push=False)
 
 # Find and replace DT_TENANT_APPS_PLACEHOLDER with real text
 do_file_replace(pattern="./**/*.yml", find_string="DT_TENANT_APPS_PLACEHOLDER", replace_string=DT_TENANT_APPS, recursive=True)
-git_commit(target_file="-A", commit_msg="update DT_TENANT_APPS_PLACEHOLDER", push=True)
+git_commit(target_file="-A", commit_msg="update DT_TENANT_APPS_PLACEHOLDER", push=False)
 
 # Find and replace GITHUB_DOT_COM_REPO_PLACEHOLDER with real text
 do_file_replace(pattern="./**/*.yml", find_string="GITHUB_DOT_COM_REPO_PLACEHOLDER", replace_string=GITHUB_DOT_COM_REPO, recursive=True)
-git_commit(target_file="-A", commit_msg="update GITHUB_DOT_COM_REPO_PLACEHOLDER", push=True)
+git_commit(target_file="-A", commit_msg="update GITHUB_DOT_COM_REPO_PLACEHOLDER", push=False)
 
 # Find and replace GEOLOCATION_PLACEHOLDER with real text
 do_file_replace(pattern="./**/*.yml", find_string="GEOLOCATION_PLACEHOLDER", replace_string=DT_GEOLOCATION, recursive=True)
-git_commit(target_file="-A", commit_msg="update GEOLOCATION_PLACEHOLDER", push=True)
+git_commit(target_file="-A", commit_msg="update GEOLOCATION_PLACEHOLDER", push=False)
 
 # Find and replace GITHUB_REPOSITORY_PLACEHOLDER with real text
 do_file_replace(pattern="./**/*.yml", find_string="GITHUB_REPOSITORY_PLACEHOLDER", replace_string=GITHUB_ORG_SLASH_REPOSITORY, recursive=True)
 git_commit(target_file="-A", commit_msg="update GITHUB_REPOSITORY_PLACEHOLDER", push=True)
-
 
 # Create cluster
 output = run_command(["kind", "create", "cluster", "--config", ".devcontainer/kind-cluster.yml", "--wait", STANDARD_TIMEOUT])

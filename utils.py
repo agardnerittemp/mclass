@@ -5,7 +5,42 @@ import glob
 import time
 import os
 
-# See bottom of file for variables
+GEOLOCATION_DEV = "GEOLOCATION-0A41430434C388A9"
+GEOLOCATION_SPRINT = "GEOLOCATION-3F7C50D0C9065578"
+GEOLOCATION_LIVE = "GEOLOCATION-4ACFC9B6B78D5BB1"
+SSO_TOKEN_URL_DEV = "https://sso-dev.dynatracelabs.com/sso/oauth2/token"
+SSO_TOKEN_URL_SPRINT = "https://sso-sprint.dynatracelabs.com/sso/oauth2/token"
+SSO_TOKEN_URL_LIVE = "https://sso.dynatrace.com/sso/oauth2/token"
+DT_RW_API_TOKEN = os.environ.get("DT_RW_API_TOKEN") # token to create all other tokens
+DT_ENV_NAME = os.environ.get("DT_ENV_NAME") # abc12345
+DT_ENV = os.environ.get("DT_ENV", "live") # dev, sprint" or "live"
+GH_RW_TOKEN = os.environ.get("GH_RW_TOKEN") # Token ArgoCD uses to create "customer-apps" repositories. TODO: What permissions does this need?
+
+# If any of these words are found in command execution output
+# The printing of the output to console will be suppressed
+# Add words here to block more things
+SENSITIVE_WORDS = ["secret", "secrets", "token", "tokens", "generate-token"]
+
+BACKSTAGE_PORT_NUMBER = 7007
+ARGOCD_PORT_NUMBER = 30100
+
+STANDARD_TIMEOUT="300s"
+WAIT_FOR_ARTIFACT_TIMEOUT = 60
+WAIT_FOR_ACCOUNTS_TIMEOUT = 60
+
+COLLECTOR_WAIT_TIMEOUT_SECONDS = 30
+OPENTELEMETRY_COLLECTOR_ENDPOINT = "http://localhost:4318"
+CODESPACE_NAME = os.environ.get("CODESPACE_NAME")
+
+GITHUB_ORG_SLASH_REPOSITORY = os.environ.get("GITHUB_REPOSITORY") # eg. agardnerIT/mclass
+GITHUB_REPO_NAME = os.environ.get("RepositoryName") # eg. mclass
+GITHUB_DOT_COM_REPO = f"https://github.com/{GITHUB_ORG_SLASH_REPOSITORY}.git"
+GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN = os.environ.get("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN")
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
+GITHUB_USER = os.environ.get("GITHUB_USER")
+DT_OAUTH_CLIENT_ID = os.environ.get("DT_OAUTH_CLIENT_ID")
+DT_OAUTH_CLIENT_SECRET = os.environ.get("DT_OAUTH_CLIENT_SECRET")
+DT_OAUTH_ACCOUNT_URN = os.environ.get("DT_OAUTH_ACCOUNT_URN")
 
 def run_command(args, ignore_errors=False):
     output = subprocess.run(args, capture_output=True, text=True)
@@ -80,6 +115,7 @@ def wait_for_artifact_to_exist(namespace="default", artifact_type="", artifact_n
 
 def get_otel_collector_endpoint():
     return OPENTELEMETRY_COLLECTOR_ENDPOINT
+
 ##############################
 # DT FUNCTIONS
 
@@ -207,42 +243,7 @@ def build_dt_urls(dt_env, dt_env_name):
     return dt_tenant_apps, dt_tenant_live
 
 
-GEOLOCATION_DEV = "GEOLOCATION-0A41430434C388A9"
-GEOLOCATION_SPRINT = "GEOLOCATION-3F7C50D0C9065578"
-GEOLOCATION_LIVE = "GEOLOCATION-4ACFC9B6B78D5BB1"
-SSO_TOKEN_URL_DEV = "https://sso-dev.dynatracelabs.com/sso/oauth2/token"
-SSO_TOKEN_URL_SPRINT = "https://sso-sprint.dynatracelabs.com/sso/oauth2/token"
-SSO_TOKEN_URL_LIVE = "https://sso.dynatrace.com/sso/oauth2/token"
-DT_RW_API_TOKEN = os.environ.get("DT_RW_API_TOKEN") # token to create all other tokens
-DT_ENV_NAME = os.environ.get("DT_ENV_NAME") # abc12345
-DT_ENV = os.environ.get("DT_ENV", "live") # dev, sprint" or "live"
-GH_RW_TOKEN = os.environ.get("GH_RW_TOKEN") # Token ArgoCD uses to create "customer-apps" repositories. TODO: What permissions does this need?
 
-# If any of these words are found in command execution output
-# The printing of the output to console will be suppressed
-# Add words here to block more things
-SENSITIVE_WORDS = ["secret", "secrets", "token", "tokens", "generate-token"]
-
-BACKSTAGE_PORT_NUMBER = 7007
-ARGOCD_PORT_NUMBER = 30100
-
-STANDARD_TIMEOUT="300s"
-WAIT_FOR_ARTIFACT_TIMEOUT = 60
-WAIT_FOR_ACCOUNTS_TIMEOUT = 60
-
-COLLECTOR_WAIT_TIMEOUT_SECONDS = 30
-OPENTELEMETRY_COLLECTOR_ENDPOINT = "http://localhost:4318"
-CODESPACE_NAME = os.environ.get("CODESPACE_NAME")
-
-GITHUB_ORG_SLASH_REPOSITORY = os.environ.get("GITHUB_REPOSITORY") # eg. agardnerIT/mclass
-GITHUB_REPO_NAME = os.environ.get("RepositoryName") # eg. mclass
-GITHUB_DOT_COM_REPO = f"https://github.com/{GITHUB_ORG_SLASH_REPOSITORY}.git"
-GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN = os.environ.get("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN")
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
-GITHUB_USER = os.environ.get("GITHUB_USER")
-DT_OAUTH_CLIENT_ID = os.environ.get("DT_OAUTH_CLIENT_ID")
-DT_OAUTH_CLIENT_SECRET = os.environ.get("DT_OAUTH_CLIENT_SECRET")
-DT_OAUTH_ACCOUNT_URN = os.environ.get("DT_OAUTH_ACCOUNT_URN")
 
 # Build DT environment URLs
 # DT_TENANT_APPS, DT_TENANT_LIVE = build_dt_urls(dt_env_name=DT_ENV_NAME, dt_env=DT_ENV)

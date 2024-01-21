@@ -42,7 +42,6 @@ def test_wait_for_collector():
         send_log_to_dt_or_otel_collector(success=False, endpoint=dt_tenant_live, msg_string="OpenTelemetry collector not available. Send via direct-to-cluster ingest endpoint.", destroy_codespace=True, dt_api_token=dt_all_ingest_token, dt_tenant_live=dt_tenant_live)
         raise Exception("On cluster collector is not available. Terminating codespace. Check DT for logs.")
 
-
 def test_ensure_namespaces_exists():
     output = run_command(["kubectl", "get", "namespaces"])
     assert "argocd" in output.stdout
