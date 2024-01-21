@@ -50,13 +50,23 @@ def git_commit(target_file="", commit_msg="", push=False):
     if push:
         output = run_command(["git", "push"], ignore_errors=True)
 
-def get_geolocation(tenant=""):
-    if ".dev." in DT_TENANT_LIVE:
+def get_geolocation():
+    if DT_ENV.lower() == "dev":
         return "GEOLOCATION-0A41430434C388A9"
-    if ".sprint." in DT_TENANT_LIVE:
+    elif DT_ENV.lower() == "sprint":
         return "GEOLOCATION-3F7C50D0C9065578"
-    if ".live." in DT_TENANT_LIVE:
+    elif DT_ENV.lower() == "live":
         return "GEOLOCATION-4ACFC9B6B78D5BB1"
+    else:
+        return None
+
+def get_sso_token_url():
+    if DT_ENV.lower() == "dev":
+        return "https://sso-dev.dynatracelabs.com/sso/oauth2/token"
+    elif DT_ENV.lower() == "sprint":
+        return "https://sso-sprint.dynatracelabs.com/sso/oauth2/token"
+    elif DT_ENV.lower() == "live":
+        return "https://sso.dynatrace.com/sso/oauth2/token"
     else:
         return None
 
@@ -114,7 +124,10 @@ def create_dt_api_token(token_name, scopes):
         json=payload
     )
 
-    return resp['token']
+    if resp.status_code != 201:
+        exit(f"Cannot create DT API token: {token_name}. Response was: {resp.status_code}. {resp.text}. Exiting.")
+
+    return resp.json()['token']
 
 ###########################################
 # INPUT VARIABLES
@@ -151,9 +164,6 @@ GITHUB_USER = os.environ.get("GITHUB_USER")
 DT_OAUTH_CLIENT_ID = os.environ.get("DT_OAUTH_CLIENT_ID")
 DT_OAUTH_CLIENT_SECRET = os.environ.get("DT_OAUTH_CLIENT_SECRET")
 DT_OAUTH_ACCOUNT_URN = os.environ.get("DT_OAUTH_ACCOUNT_URN")
-#DT_ALL_INGEST_TOKEN = os.environ.get("DT_ALL_INGEST_TOKEN")
-#DT_OP_TOKEN = os.environ.get("DT_OP_TOKEN")
-#DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
 
 if (
     DT_RW_API_TOKEN is None or
@@ -177,20 +187,7 @@ if DT_ENV.lower() == "dev" or DT_ENV.lower() == "sprint":
     DT_TENANT_LIVE = DT_TENANT_LIVE.replace(".dynatrace.com", ".dynatracelabs.com")
 
 # Set correct SSO URL
-# Do so dynamically based on current DT environment
-# DT environment is derived from URL
-# These endpoints won't (often) change (if at all)
-OAUTH_DEV_ENDPOINT = "https://sso-dev.dynatracelabs.com/sso/oauth2/token"
-OAUTH_SPRINT_ENDPOINT = "https://sso-sprint.dynatracelabs.com/sso/oauth2/token"
-OAUTH_PROD_ENDPOINT = "https://sso.dynatrace.com/sso/oauth2/token"
-
-# default to "prod"
-DT_SSO_TOKEN_URL =  OAUTH_PROD_ENDPOINT
-
-if DT_ENV.lower() == "dev":
-    DT_SSO_TOKEN_URL = OAUTH_DEV_ENDPOINT
-if DT_ENV.lower() == "sprint":
-    DT_SSO_TOKEN_URL = OAUTH_SPRINT_ENDPOINT
+DT_SSO_TOKEN_URL = get_sso_token_url()
 
 # Create other DT tokens
 DT_ALL_INGEST_TOKEN = create_dt_api_token(token_name="[devrel demo] DT_ALL_INGEST_TOKEN", scopes=[
@@ -217,10 +214,13 @@ INSTALL_KEPTN = os.environ.get("INSTALL_KEPTN", "true")
 
 if INSTALL_KEPTN.lower() == "false" or INSTALL_KEPTN.lower() == "no":
     # Rename files to prevent installation by argoCD
-    os.rename(src="gitops/applications/platform/keptn.yml", dst="gitops/applications/platform/keptn.yml.BAK")
-    os.rename(src="gitops/manifests/platform/keptn/keptn-metrics.yml", dst="gitops/manifests/platform/keptn/keptn-metrics.yml.BAK")
-    os.rename(src="gitops/manifests/platform/keptn/otelcol-keptnconfig.yml", dst="gitops/manifests/platform/keptn/otelcol-keptnconfig.yml.BAK")
-    git_commit(target_file="-A", commit_msg="do not install Keptn", push=True)
+    try:
+        os.rename(src="gitops/applications/platform/keptn.yml", dst="gitops/applications/platform/keptn.yml.BAK")
+        os.rename(src="gitops/manifests/platform/keptn/keptn-metrics.yml", dst="gitops/manifests/platform/keptn/keptn-metrics.yml.BAK")
+        os.rename(src="gitops/manifests/platform/keptn/otelcol-keptnconfig.yml", dst="gitops/manifests/platform/keptn/otelcol-keptnconfig.yml.BAK")
+        git_commit(target_file="-A", commit_msg="do not install Keptn", push=True)
+    except:
+        print("Exception caught renaming (to remove) Keptn files. No big deal. You're probably re-running this script. Continuing.")
 
 # Set DT GEOLOCATION based on env type used
 # TODO: Find a better way here. If this was widely used, all load would be on one GEOLOCATION.
