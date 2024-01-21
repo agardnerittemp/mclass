@@ -124,7 +124,19 @@ DT_ALL_INGEST_TOKEN = os.environ.get("DT_ALL_INGEST_TOKEN")
 DT_OP_TOKEN = os.environ.get("DT_OP_TOKEN")
 DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
 
-# TODO: None checking the above variables
+if (
+    DT_TENANT_LIVE is None or
+    DT_TENANT_APPS is None or
+    GH_RW_TOKEN is None or
+    DT_ALL_INGEST_TOKEN is None or
+    DT_OAUTH_CLIENT_ID is None or
+    DT_OAUTH_CLIENT_SECRET is None or
+    DT_OAUTH_ACCOUNT_URN is None or
+    DT_ALL_INGEST_TOKEN is None or
+    DT_OP_TOKEN is None or
+    DT_MONACO_TOKEN is None
+):
+    exit("Missing mandatory environment variables. Cannot proceed. Exiting.")
 
 # Strip trailing slashes (if present) from URLS
 DT_TENANT_LIVE = DT_TENANT_LIVE.rstrip("/")
