@@ -10,7 +10,7 @@
 
 Currently, the [ArgoCD SCM Provider Generator for GitHub](https://argocd-applicationset.readthedocs.io/en/stable/Generators-SCM-Provider/#github) only supports syncing from organizations, not user accounts.
 
-##Fork Repo
+## Fork Repo
 
 For this repo into your new organisation.
 
