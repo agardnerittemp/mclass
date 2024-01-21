@@ -16,7 +16,7 @@ For this repo into your new organisation.
 
 In your fork, go to: "Settings > Secrets and variables > codespaces".
 
-Create secrets with these EXACT names. URLs should **not** contain trailing slashes.
+Create secrets with these EXACT names.
 
 - `DT_ALL_INGEST_TOKEN`
 - `DT_MONACO_TOKEN`
