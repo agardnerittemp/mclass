@@ -1,9 +1,22 @@
 # mclass
 
-- [Create a free GitHub organization](https://github.com/account/organizations/new?plan=free)
-- Fork this repo.
+##  Cretae a GitHub Organization
 
-In your fork. Go to: "Settings > Secrets and variables > codespaces". Create secrets with these EXACT names:
+[Create a free GitHub organization](https://github.com/account/organizations/new?plan=free)
+
+> Do not skip this step! The demo **will not work without an organization**. It will not work under your user account.
+
+### Why won't it work?
+
+Currently, the [ArgoCD SCM Provider Generator for GitHub](https://argocd-applicationset.readthedocs.io/en/stable/Generators-SCM-Provider/#github) only supports syncing from organizations, not user accounts.
+
+##Fork Repo
+
+For this repo into your new organisation.
+
+In your fork, go to: "Settings > Secrets and variables > codespaces".
+
+Create secrets with these EXACT names:
 
 - `DT_ALL_INGEST_TOKEN`
 - `DT_MONACO_TOKEN`
