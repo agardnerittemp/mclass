@@ -1,169 +1,31 @@
 import os
-import subprocess
-import time
-import glob
-import requests
-import datetime
-
-#####################
-# FUNCTIONS
-#####################
-
-def run_command(args, ignore_errors=False):
-    output = subprocess.run(args, capture_output=True, text=True)
-
-    # Secure coding. Don't print sensitive info to console.
-    # Find common elements between blocked words and args.
-    # Only print output if not found.
-    # If found, it means the output of this command (as given in args) is expected to be sensitive
-    # So do not print.
-    set1 = set(args)
-    set2 = set(SENSITIVE_WORDS)
-    common_elems = (set1 & set2)
-    if not common_elems:
-        print(output.stdout)
-
-    # Annoyingly, if git has nothing to commit
-    # it exits with a returncode == 1
-    # So ignore any git errors but exit for all others
-    if not ignore_errors and output.returncode > 0:
-        exit(f"Got an error! Return Code: {output.returncode}. Error: {output.stderr}. Stdout: {output.stdout}. Exiting.")
-    return output
-
-def do_file_replace(pattern="", find_string="", replace_string="", recursive=False):
-    for filepath in glob.iglob(pattern, recursive=recursive):
-        TARGET_FILE = False
-        with open(filepath, "r") as file: # open file in read mode only first
-            file_content = file.read()
-            if find_string in file_content:
-                TARGET_FILE = True
-        # Replace the text
-        file_content = file_content.replace(find_string, replace_string)
-
-        if TARGET_FILE:
-            with open(filepath, "w") as file: # now open in write mode and write
-                file.write(file_content)
-
-def git_commit(target_file="", commit_msg="", push=False):
-    output = run_command(["git", "add", target_file], ignore_errors=True)
-    output = run_command(["git", "commit", "-m", commit_msg], ignore_errors=True)
-    if push:
-        output = run_command(["git", "push"], ignore_errors=True)
-
-def get_geolocation():
-    if DT_ENV.lower() == "dev":
-        return "GEOLOCATION-0A41430434C388A9"
-    elif DT_ENV.lower() == "sprint":
-        return "GEOLOCATION-3F7C50D0C9065578"
-    elif DT_ENV.lower() == "live":
-        return "GEOLOCATION-4ACFC9B6B78D5BB1"
-    else:
-        return None
-
-def get_sso_token_url():
-    if DT_ENV.lower() == "dev":
-        return "https://sso-dev.dynatracelabs.com/sso/oauth2/token"
-    elif DT_ENV.lower() == "sprint":
-        return "https://sso-sprint.dynatracelabs.com/sso/oauth2/token"
-    elif DT_ENV.lower() == "live":
-        return "https://sso.dynatrace.com/sso/oauth2/token"
-    else:
-        return None
-
-# Whereas the kubectl wait command can be used to wait for EXISTING artifacts (eg. deployments) to be READY.
-# kubectl wait will error if the artifact DOES NOT EXIST YET.
-# This function first waits for it to even exist
-# eg. wait_for_artifact_to_exist(namespace="default", artifact_type="deployment", artifact_name="backstage")
-def wait_for_artifact_to_exist(namespace="default", artifact_type="", artifact_name=""):
-    count = 1
-    get_output = run_command(["kubectl", "-n", namespace, "get", f"{artifact_type}/{artifact_name}"], ignore_errors=True)
-
-    # if artifact does not exist, important output will be in stderr
-    # if artifact DOES exist, use stdout
-    if get_output.stderr != "":
-        get_output = get_output.stderr
-    else:
-        get_output = get_output.stdout
-
-    print(get_output)
-
-    while count < WAIT_FOR_ARTIFACT_TIMEOUT and "not found" in get_output:
-        print(f"Waiting for {artifact_type}/{artifact_name} in {namespace} to exist. Wait count: {count}")
-        count += 1
-        get_output = run_command(["kubectl", "-n", namespace, "get", f"{artifact_type}/{artifact_name}"], ignore_errors=True)
-        # if artifact does not exist, important output will be in stderr
-        # if artifact DOES exist, use stdout
-        if get_output.stderr != "":
-            get_output = get_output.stderr
-        else:
-            get_output = get_output.stdout
-        print(get_output)
-        time.sleep(1)
-
-def create_dt_api_token(token_name, scopes):
-
-    # Automatically expire tokens 1 day in future.
-    time_future = datetime.datetime.now() + datetime.timedelta(days=1)
-    expiry_date = time_future.strftime("%Y-%m-%dT%H:%M:%S.999Z")
-
-    headers = {
-        "accept": "application/json; charset=utf-8",
-        "content-type": "application/json; charset=utf-8",
-        "authorization": f"api-token {DT_RW_API_TOKEN}"
-    }
-
-    payload = {
-        "name": token_name,
-        "scopes": scopes,
-        "expirationDate": expiry_date
-    }
-
-    resp = requests.post(
-        url=f"{DT_TENANT_LIVE}/api/v2/apiTokens",
-        headers=headers,
-        json=payload
-    )
-
-    if resp.status_code != 201:
-        exit(f"Cannot create DT API token: {token_name}. Response was: {resp.status_code}. {resp.text}. Exiting.")
-
-    return resp.json()['token']
+from utils import *
 
 ###########################################
 # INPUT VARIABLES
 ###########################################
 
-WAIT_FOR_SECRETS_TIMEOUT = 60
-WAIT_FOR_ACCOUNTS_TIMEOUT = 60
-WAIT_FOR_ARTIFACT_TIMEOUT = 60
+#WAIT_FOR_SECRETS_TIMEOUT = 60
+#WAIT_FOR_ACCOUNTS_TIMEOUT = 60
 
-STANDARD_TIMEOUT="300s"
-# If any of these words are found in command execution output
-# The printing of the output to console will be suppressed
-# Add words here to block more things
-SENSITIVE_WORDS = ["secret", "secrets", "token", "tokens", "generate-token"]
-
-BACKSTAGE_PORT_NUMBER = 7007
-ARGOCD_PORT_NUMBER = 30100
-DT_RW_API_TOKEN = os.environ.get("DT_RW_API_TOKEN") # token to create all other tokens
-DT_ENV_NAME = os.environ.get("DT_ENV_NAME") # abc12345
-DT_ENV = os.environ.get("DT_ENV", "live") # dev, sprint" or "live"
-#DT_TENANT_LIVE = os.environ.get("DT_TENANT_LIVE")
-#DT_TENANT_APPS = os.environ.get("DT_TENANT_APPS")
-GH_RW_TOKEN = os.environ.get("GH_RW_TOKEN")
-DT_GEOLOCATION = None
-
-#DT_ALL_INGEST_TOKEN = os.environ.get("DT_ALL_INGEST_TOKEN")
-CODESPACE_NAME = os.environ.get("CODESPACE_NAME")
-GITHUB_ORG_SLASH_REPOSITORY = os.environ.get("GITHUB_REPOSITORY") # eg. agardnerIT/mclass
-GITHUB_REPO_NAME = os.environ.get("RepositoryName") # eg. mclass
-GITHUB_DOT_COM_REPO = f"https://github.com/{GITHUB_ORG_SLASH_REPOSITORY}.git"
-GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN = os.environ.get("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN")
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
-GITHUB_USER = os.environ.get("GITHUB_USER")
-DT_OAUTH_CLIENT_ID = os.environ.get("DT_OAUTH_CLIENT_ID")
-DT_OAUTH_CLIENT_SECRET = os.environ.get("DT_OAUTH_CLIENT_SECRET")
-DT_OAUTH_ACCOUNT_URN = os.environ.get("DT_OAUTH_ACCOUNT_URN")
+#STANDARD_TIMEOUT="300s"
+#BACKSTAGE_PORT_NUMBER = 7007
+# ARGOCD_PORT_NUMBER = 30100
+# DT_RW_API_TOKEN = os.environ.get("DT_RW_API_TOKEN") # token to create all other tokens
+# DT_ENV_NAME = os.environ.get("DT_ENV_NAME") # abc12345
+# DT_ENV = os.environ.get("DT_ENV", "live") # dev, sprint" or "live"
+#GH_RW_TOKEN = os.environ.get("GH_RW_TOKEN") # Token ArgoCD uses to create "customer-apps" repositories. TODO: What permissions does this need?
+#DT_GEOLOCATION = None
+#CODESPACE_NAME = os.environ.get("CODESPACE_NAME")
+#GITHUB_ORG_SLASH_REPOSITORY = os.environ.get("GITHUB_REPOSITORY") # eg. agardnerIT/mclass
+# GITHUB_REPO_NAME = os.environ.get("RepositoryName") # eg. mclass
+# GITHUB_DOT_COM_REPO = f"https://github.com/{GITHUB_ORG_SLASH_REPOSITORY}.git"
+# GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN = os.environ.get("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN")
+# GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
+# GITHUB_USER = os.environ.get("GITHUB_USER")
+# DT_OAUTH_CLIENT_ID = os.environ.get("DT_OAUTH_CLIENT_ID")
+# DT_OAUTH_CLIENT_SECRET = os.environ.get("DT_OAUTH_CLIENT_SECRET")
+# DT_OAUTH_ACCOUNT_URN = os.environ.get("DT_OAUTH_ACCOUNT_URN")
 
 if (
     DT_RW_API_TOKEN is None or
@@ -177,17 +39,10 @@ if (
     exit("Missing mandatory environment variables. Cannot proceed. Exiting.")
 
 # Build DT environment URLs
-DT_TENANT_APPS = f"https://{DT_ENV_NAME}.{DT_ENV}.apps.dynatrace.com"
-DT_TENANT_LIVE = f"https://{DT_ENV_NAME}.{DT_ENV}.dynatrace.com"
+DT_TENANT_APPS, DT_TENANT_LIVE = build_dt_urls(dt_env_name=DT_ENV_NAME, dt_env=DT_ENV)
 
-# if environment is "dev" or "sprint"
-# ".dynatracelabs.com" not ".dynatrace.com"
-if DT_ENV.lower() == "dev" or DT_ENV.lower() == "sprint":
-    DT_TENANT_APPS = DT_TENANT_APPS.replace(".dynatrace.com", ".dynatracelabs.com")
-    DT_TENANT_LIVE = DT_TENANT_LIVE.replace(".dynatrace.com", ".dynatracelabs.com")
-
-# Set correct SSO URL
-DT_SSO_TOKEN_URL = get_sso_token_url()
+# Get correct SSO URL
+DT_SSO_TOKEN_URL = get_sso_token_url(dt_env=DT_ENV)
 
 # Create other DT tokens
 DT_ALL_INGEST_TOKEN = create_dt_api_token(token_name="[devrel demo] DT_ALL_INGEST_TOKEN", scopes=[
@@ -196,8 +51,8 @@ DT_ALL_INGEST_TOKEN = create_dt_api_token(token_name="[devrel demo] DT_ALL_INGES
     "logs.ingest",
     "metrics.ingest",
     "openTelemetryTrace.ingest"
-])
-DT_OP_TOKEN = create_dt_api_token(token_name="[devrel demo] DT_OP_TOKEN", scopes=["InstallerDownload"])
+], dt_rw_api_token=DT_RW_API_TOKEN, dt_tenant_live=DT_TENANT_LIVE)
+DT_OP_TOKEN = create_dt_api_token(token_name="[devrel demo] DT_OP_TOKEN", scopes=["InstallerDownload"], dt_rw_api_token=DT_RW_API_TOKEN, dt_tenant_live=DT_TENANT_LIVE)
 DT_MONACO_TOKEN = create_dt_api_token(token_name="[devrel demo] DT_MONACO_TOKEN", scopes=[
     "settings.read",
     "settings.write",
@@ -207,7 +62,7 @@ DT_MONACO_TOKEN = create_dt_api_token(token_name="[devrel demo] DT_MONACO_TOKEN"
     "ExternalSyntheticIntegration",
     "ReadConfig",
     "WriteConfig"
-])
+], dt_rw_api_token=DT_RW_API_TOKEN, dt_tenant_live=DT_TENANT_LIVE)
 
 # Should Keptn be installed or not?
 INSTALL_KEPTN = os.environ.get("INSTALL_KEPTN", "true")
@@ -224,13 +79,7 @@ if INSTALL_KEPTN.lower() == "false" or INSTALL_KEPTN.lower() == "no":
 
 # Set DT GEOLOCATION based on env type used
 # TODO: Find a better way here. If this was widely used, all load would be on one GEOLOCATION.
-DT_GEOLOCATION = get_geolocation(DT_TENANT_LIVE)
-
-###########################
-# TEMP AREA
-###########################
-
-# END TEMP AREA
+DT_GEOLOCATION = get_geolocation(dt_env=DT_ENV)
 
 # Delete cluster first, in case this is a re-run
 run_command(["kind", "delete", "cluster"])
