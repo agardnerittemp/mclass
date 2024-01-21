@@ -2,7 +2,8 @@ import os
 import subprocess
 import time
 import glob
-
+import requests
+import datetime
 
 #####################
 # FUNCTIONS
@@ -89,6 +90,32 @@ def wait_for_artifact_to_exist(namespace="default", artifact_type="", artifact_n
         print(get_output)
         time.sleep(1)
 
+def create_dt_api_token(token_name, scopes):
+
+    # Automatically expire tokens 1 day in future.
+    time_future = datetime.datetime.now() + datetime.timedelta(days=1)
+    expiry_date = time_future.strftime("%Y-%m-%dT%H:%M:%S.999Z")
+
+    headers = {
+        "accept": "application/json; charset=utf-8",
+        "content-type": "application/json; charset=utf-8",
+        "authorization": f"api-token {DT_RW_API_TOKEN}"
+    }
+
+    payload = {
+        "name": token_name,
+        "scopes": scopes,
+        "expirationDate": expiry_date
+    }
+
+    resp = requests.post(
+        url=f"{DT_TENANT_LIVE}/api/v2/apiTokens",
+        headers=headers,
+        json=payload
+    )
+
+    return resp['token']
+
 ###########################################
 # INPUT VARIABLES
 ###########################################
@@ -105,11 +132,15 @@ SENSITIVE_WORDS = ["secret", "secrets", "token", "tokens", "generate-token"]
 
 BACKSTAGE_PORT_NUMBER = 7007
 ARGOCD_PORT_NUMBER = 30100
-DT_TENANT_LIVE = os.environ.get("DT_TENANT_LIVE")
-DT_TENANT_APPS = os.environ.get("DT_TENANT_APPS")
+DT_RW_API_TOKEN = os.environ.get("DT_RW_API_TOKEN") # token to create all other tokens
+DT_ENV_NAME = os.environ.get("DT_ENV_NAME") # abc12345
+DT_ENV = os.environ.get("DT_ENV", "live") # dev, sprint" or "live"
+#DT_TENANT_LIVE = os.environ.get("DT_TENANT_LIVE")
+#DT_TENANT_APPS = os.environ.get("DT_TENANT_APPS")
 GH_RW_TOKEN = os.environ.get("GH_RW_TOKEN")
 DT_GEOLOCATION = None
-DT_ALL_INGEST_TOKEN = os.environ.get("DT_ALL_INGEST_TOKEN")
+
+#DT_ALL_INGEST_TOKEN = os.environ.get("DT_ALL_INGEST_TOKEN")
 CODESPACE_NAME = os.environ.get("CODESPACE_NAME")
 GITHUB_ORG_SLASH_REPOSITORY = os.environ.get("GITHUB_REPOSITORY") # eg. agardnerIT/mclass
 GITHUB_REPO_NAME = os.environ.get("RepositoryName") # eg. mclass
@@ -120,32 +151,30 @@ GITHUB_USER = os.environ.get("GITHUB_USER")
 DT_OAUTH_CLIENT_ID = os.environ.get("DT_OAUTH_CLIENT_ID")
 DT_OAUTH_CLIENT_SECRET = os.environ.get("DT_OAUTH_CLIENT_SECRET")
 DT_OAUTH_ACCOUNT_URN = os.environ.get("DT_OAUTH_ACCOUNT_URN")
-DT_ALL_INGEST_TOKEN = os.environ.get("DT_ALL_INGEST_TOKEN")
-DT_OP_TOKEN = os.environ.get("DT_OP_TOKEN")
-DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
+#DT_ALL_INGEST_TOKEN = os.environ.get("DT_ALL_INGEST_TOKEN")
+#DT_OP_TOKEN = os.environ.get("DT_OP_TOKEN")
+#DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
 
 if (
-    DT_TENANT_LIVE is None or
-    DT_TENANT_APPS is None or
+    DT_RW_API_TOKEN is None or
+    DT_ENV_NAME is None or
+    DT_ENV is None or
     GH_RW_TOKEN is None or
-    DT_ALL_INGEST_TOKEN is None or
     DT_OAUTH_CLIENT_ID is None or
     DT_OAUTH_CLIENT_SECRET is None or
-    DT_OAUTH_ACCOUNT_URN is None or
-    DT_ALL_INGEST_TOKEN is None or
-    DT_OP_TOKEN is None or
-    DT_MONACO_TOKEN is None
+    DT_OAUTH_ACCOUNT_URN is None
 ):
     exit("Missing mandatory environment variables. Cannot proceed. Exiting.")
 
-# Strip trailing slashes (if present) from URLS
-DT_TENANT_LIVE = DT_TENANT_LIVE.rstrip("/")
-DT_TENANT_APPS = DT_TENANT_APPS.rstrip("/")
+# Build DT environment URLs
+DT_TENANT_APPS = f"https://{DT_ENV_NAME}.{DT_ENV}.apps.dynatrace.com"
+DT_TENANT_LIVE = f"https://{DT_ENV_NAME}.{DT_ENV}.dynatrace.com"
 
-# Derive DT_TENANT_NAME from DT URL
-name_start_pos = DT_TENANT_LIVE.rindex("/")+1
-name_end_pos = DT_TENANT_LIVE.index(".")
-DT_TENANT_NAME = DT_TENANT_LIVE[name_start_pos:name_end_pos]
+# if environment is "dev" or "sprint"
+# ".dynatracelabs.com" not ".dynatrace.com"
+if DT_ENV.lower() == "dev" or DT_ENV.lower() == "sprint":
+    DT_TENANT_APPS = DT_TENANT_APPS.replace(".dynatrace.com", ".dynatracelabs.com")
+    DT_TENANT_LIVE = DT_TENANT_LIVE.replace(".dynatrace.com", ".dynatracelabs.com")
 
 # Set correct SSO URL
 # Do so dynamically based on current DT environment
@@ -158,10 +187,30 @@ OAUTH_PROD_ENDPOINT = "https://sso.dynatrace.com/sso/oauth2/token"
 # default to "prod"
 DT_SSO_TOKEN_URL =  OAUTH_PROD_ENDPOINT
 
-if ".dev." in DT_TENANT_APPS.lower():
+if DT_ENV.lower() == "dev":
     DT_SSO_TOKEN_URL = OAUTH_DEV_ENDPOINT
-if ".sprint." in DT_TENANT_APPS.lower():
+if DT_ENV.lower() == "sprint":
     DT_SSO_TOKEN_URL = OAUTH_SPRINT_ENDPOINT
+
+# Create other DT tokens
+DT_ALL_INGEST_TOKEN = create_dt_api_token(token_name="[devrel demo] DT_ALL_INGEST_TOKEN", scopes=[
+    "bizevents.ingest",
+    "events.ingest",
+    "logs.ingest",
+    "metrics.ingest",
+    "openTelemetryTrace.ingest"
+])
+DT_OP_TOKEN = create_dt_api_token(token_name="[devrel demo] DT_OP_TOKEN", scopes=["InstallerDownload"])
+DT_MONACO_TOKEN = create_dt_api_token(token_name="[devrel demo] DT_MONACO_TOKEN", scopes=[
+    "settings.read",
+    "settings.write",
+    "slo.read",
+    "slo.write",
+    "DataExport",
+    "ExternalSyntheticIntegration",
+    "ReadConfig",
+    "WriteConfig"
+])
 
 # Should Keptn be installed or not?
 INSTALL_KEPTN = os.environ.get("INSTALL_KEPTN", "true")
@@ -271,7 +320,7 @@ output = run_command(["kubectl", "-n", "backstage", "create", "secret", "generic
                       f"--from-literal=GITHUB_USER={GITHUB_USER}",
                       f"--from-literal=GITHUB_REPO={GITHUB_REPO_NAME}",
                       f"--from-literal=GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN={GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}",
-                      f"--from-literal=DT_TENANT_NAME={DT_TENANT_NAME}",
+                      f"--from-literal=DT_TENANT_NAME={DT_ENV_NAME}",
                       f"--from-literal=DT_TENANT_LIVE={DT_TENANT_LIVE}",
                       f"--from-literal=DT_TENANT_APPS={DT_TENANT_APPS}",
                       f"--from-literal=DT_SSO_TOKEN_URL={DT_SSO_TOKEN_URL}",
