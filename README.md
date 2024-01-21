@@ -16,7 +16,7 @@ For this repo into your new organisation.
 
 In your fork, go to: "Settings > Secrets and variables > codespaces".
 
-Create secrets with these EXACT names:
+Create secrets with these EXACT names. URLs should **not** contain trailing slashes.
 
 - `DT_ALL_INGEST_TOKEN`
 - `DT_MONACO_TOKEN`
@@ -31,9 +31,7 @@ Create secrets with these EXACT names:
 
 ## Run without Keptn
 
-In your forked repository, go to: "Settings > Secrets and variables > Codespaces"
-
-Create a secret called (case sensitive): `INSTALL_KEPTN`
+In addition to the secrets above, create another secret called (case sensitive): `INSTALL_KEPTN`
 
 Set the value to `false`.
 

@@ -105,7 +105,6 @@ SENSITIVE_WORDS = ["secret", "secrets", "token", "tokens", "generate-token"]
 
 BACKSTAGE_PORT_NUMBER = 7007
 ARGOCD_PORT_NUMBER = 30100
-DT_TENANT_NAME = os.environ.get("DT_TENANT_NAME")
 DT_TENANT_LIVE = os.environ.get("DT_TENANT_LIVE")
 DT_TENANT_APPS = os.environ.get("DT_TENANT_APPS")
 GH_RW_TOKEN = os.environ.get("GH_RW_TOKEN")
@@ -127,6 +126,16 @@ DT_OP_TOKEN = os.environ.get("DT_OP_TOKEN")
 DT_MONACO_TOKEN = os.environ.get("DT_MONACO_TOKEN")
 
 # TODO: None checking the above variables
+
+# Strip trailing slashes (if present) from URLS
+DT_TENANT_LIVE = DT_TENANT_LIVE.rstrip("/")
+DT_TENANT_APPS = DT_TENANT_APPS.rstrip("/")
+
+# Derive DT_TENANT_NAME from DT URL
+name_start_pos = DT_TENANT_LIVE.rindex("/")+1
+name_end_pos = DT_TENANT_LIVE.index(".")
+
+DT_TENANT_NAME = DT_TENANT_LIVE[name_start_pos:name_end_pos]
 
 INSTALL_KEPTN = os.environ.get("INSTALL_KEPTN", "true")
 
