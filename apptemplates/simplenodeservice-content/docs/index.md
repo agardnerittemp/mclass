@@ -5,9 +5,9 @@ Environment: ${{ values.releaseStage }}
 
 ## ArgoCD Status
 
-[![](https://argo.BASE_DOMAIN_PLACEHOLDER/api/badge?name=${{ values.projectName }}-${{ values.teamIdentifier }}-${{ values.releaseStage }}-cd)](https://argo.BASE_DOMAIN_PLACEHOLDER/applications/argocd/${{ values.projectName }}-${{ values.teamIdentifier }}-${{ values.releaseStage }}-cd)
+[![](https://CODESPACE_NAME_PLACEHOLDER-ARGOCD_PORT_NUMBER_PLACEHOLDER.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN_PLACEHOLDER/api/badge?name=${{ values.projectName }}-${{ values.teamIdentifier }}-${{ values.releaseStage }}-cd)](https://CODESPACE_NAME_PLACEHOLDER-ARGOCD_PORT_NUMBER_PLACEHOLDER.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN_PLACEHOLDER/applications/argocd/${{ values.projectName }}-${{ values.teamIdentifier }}-${{ values.releaseStage }}-cd)
 
 ## Monitored by Dynatrace
 📈Click the logo to view your dashboard 📈
 
-[![](https://raw.githubusercontent.com/agardnerIT/mclass/main/dtlogo.svg)](https://jao16384.sprint.apps.dynatracelabs.com/ui/apps/dynatrace.dashboards/)
+[![](https://raw.githubusercontent.com/GITHUB_ORG_SLASH_REPOSITORY/main/dtlogo.svg)](DT_TENANT_APPS_PLACEHOLDER/ui/apps/dynatrace.dashboards/)

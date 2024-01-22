@@ -13,7 +13,7 @@ spec:
       cloneProtocol: https
       github:
         allBranches: false
-        organization: "GITHUB_REPO_NAME_PLACEHOLDER" # TODO: Make this a placeholder which cluster_installer.py replaces
+        organization: "GITHUB_REPO_NAME_PLACEHOLDER"
   template:
     metadata:
       name: "{{ repository }}"
