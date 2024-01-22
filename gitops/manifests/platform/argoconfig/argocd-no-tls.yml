@@ -7,4 +7,5 @@ metadata:
   name: argocd-cmd-params-cm
   namespace: argocd
 data:
+  otlp.address: otel-collector.opentelemetry.svc.cluster.local:4317
   server.insecure: "true"
