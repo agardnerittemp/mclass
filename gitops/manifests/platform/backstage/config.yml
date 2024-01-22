@@ -71,7 +71,7 @@ data:
             organization: ${GITHUB_ORG}
             catalogPath: '**/catalog-info.yaml' # this will search recursively all folders for catalog-info.yaml files
             filters:
-              repository: '.*mclass'
+              repository: ".*GITHUB_REPO_NAME_PLACEHOLDER" # TODO: use placeholder
             # filters:
             #   branch: "main"
             #   repository: ".*"
