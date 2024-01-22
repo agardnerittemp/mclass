@@ -40,10 +40,9 @@ if (
 
 # Build DT environment URLs
 DT_TENANT_APPS, DT_TENANT_LIVE = build_dt_urls(dt_env_name=DT_ENV_NAME, dt_env=DT_ENV)
-print(f"DT_TENANT_APPS: {DT_TENANT_APPS}. DT_TENANT_LIVE: {DT_TENANT_LIVE}")
+
 # Get correct SSO URL
 DT_SSO_TOKEN_URL = get_sso_token_url(dt_env=DT_ENV)
-print(f"DT_SSO_TOKEN_URL: {DT_SSO_TOKEN_URL}")
 
 # Create other DT tokens
 DT_ALL_INGEST_TOKEN = create_dt_api_token(token_name="[devrel demo] DT_ALL_INGEST_TOKEN", scopes=[
