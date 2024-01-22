@@ -113,6 +113,11 @@ git_commit(target_file="-A", commit_msg="update GITHUB_REPOSITORY_PLACEHOLDER", 
 do_file_replace(pattern="./**/*.yml", find_string="GITHUB_REPO_NAME_PLACEHOLDER", replace_string=GITHUB_REPO_NAME, recursive=True)
 git_commit(target_file="-A", commit_msg="update GITHUB_REPO_NAME_PLACEHOLDER", push=True)
 
+github_org = get_github_org(github_repo=GITHUB_ORG_SLASH_REPOSITORY)
+# Find and replace GITHUB_ORG_NAME_PLACEHOLDER with real text. eg. `yourOrg`
+do_file_replace(pattern="./**/*.yml", find_string="GITHUB_ORG_NAME_PLACEHOLDER", replace_string=github_org, recursive=True)
+git_commit(target_file="-A", commit_msg="update GITHUB_ORG_NAME_PLACEHOLDER", push=True)
+
 # Create cluster
 output = run_command(["kind", "create", "cluster", "--config", ".devcontainer/kind-cluster.yml", "--wait", STANDARD_TIMEOUT])
 
@@ -165,7 +170,6 @@ output = run_command(["kubectl", "config", "set-context", "--current", "--namesp
 output = run_command(["kubectl", "-n", "opentelemetry", "create", "secret", "generic", "dt-details", f"--from-literal=DT_URL={DT_TENANT_LIVE}", f"--from-literal=DT_OTEL_ALL_INGEST_TOKEN={DT_ALL_INGEST_TOKEN}"])
 
 # create backstage-details secret in backstage namespace
-github_org = get_github_org(github_repo=GITHUB_ORG_SLASH_REPOSITORY)
 output = run_command(["kubectl", "-n", "backstage", "create", "secret", "generic", "backstage-secrets",
                       f"--from-literal=BASE_DOMAIN={CODESPACE_NAME}",
                       f"--from-literal=BACKSTAGE_PORT_NUMBER={BACKSTAGE_PORT_NUMBER}",

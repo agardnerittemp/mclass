@@ -51,11 +51,6 @@ spec:
           description: Email to reach your team (eg. team01@dynatrace.training)
           type: string
           ui:placeholder: 'teamEmail'
-        githubOrg:
-          title: GitHub Organization Name
-          description: The name of the GitHub organization you created to hold new projects
-          type: string
-          ui:placeholder: 'githubOrg'
     - title: Application Details
       required:
         - appVersion
@@ -149,7 +144,7 @@ spec:
       action: publish:github
       name: Publish to Github
       input:
-        repoUrl: "github.com?repo=${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd&owner=${{ parameters.githubOrg }}"
+        repoUrl: "github.com?repo=${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd&owner=GITHUB_ORG_NAME_PLACEHOLDER"
         sourcePath: "./${{ parameters.projectName }}-content"
         repoVisibility: 'public'
         defaultBranch: 'main'
@@ -173,10 +168,10 @@ spec:
         entityRef: ${{ steps.catalog.output.entityRef }}
       - title: View in ArgoCD
         icon: catalog
-        url: https://argo.BASE_DOMAIN_PLACEHOLDER/applications/argocd/${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd
+        url: https://CODESPACE_NAME_PLACEHOLDER-ARGOCD_PORT_NUMBER_PLACEHOLDER.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN_PLACEHOLDER/applications/argocd/${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd
       - title: View in Dynatrace
         icon: catalog
-        url: https://jao16384.sprint.apps.dynatracelabs.com/
+        url: DT_TENANT_APPS_PLACEHOLDER
 ---
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
