@@ -19,7 +19,13 @@ from utils import *
 def test_wait_for_collector():
     
     _, dt_tenant_live = build_dt_urls(dt_env=DT_ENV, dt_env_name=DT_ENV_NAME)
-    dt_all_ingest_token = create_dt_api_token(token_name="[devrel demo] DT_ALL_INGEST_TOKEN pytest", dt_rw_api_token=DT_RW_API_TOKEN, dt_tenant_live=dt_tenant_live)
+    dt_all_ingest_token = create_dt_api_token(token_name="[devrel demo/codespaces_test.py] DT_ALL_INGEST_TOKEN pytest", dt_rw_api_token=DT_RW_API_TOKEN, dt_tenant_live=dt_tenant_live, scopes=[
+        "bizevents.ingest",
+        "events.ingest",
+        "logs.ingest",
+        "metrics.ingest",
+        "openTelemetryTrace.ingest"
+    ])
     count = 1
 
     COLLECTOR_AVAILABLE = False
