@@ -71,7 +71,7 @@ data:
             organization: ${GITHUB_ORG}
             catalogPath: '**/catalog-info.yaml' # this will search recursively all folders for catalog-info.yaml files
             filters:
-              repository: ".*GITHUB_REPO_NAME_PLACEHOLDER" # TODO: use placeholder
+              repository: ".*${GITHUB_REPO}"
             # filters:
             #   branch: "main"
             #   repository: ".*"
@@ -98,7 +98,8 @@ data:
         - type: 'config'
           instances:
             - name: argocd
-              url: https://${BASE_DOMAIN}-${ARGOCD_PORT_NUMBER}.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}
+              # eg. https://friendly-space-capybara-6vwwx95557r3q47-30100.app.github.dev
+              url: https://${BASE_DOMAIN}-ARGOCD_PORT_NUMBER_PLACEHOLDER.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN_PLACEHOLDER
               token: ${ARGOCD_TOKEN}
               
     # See https://backstage.io/docs/features/kubernetes/configuration
