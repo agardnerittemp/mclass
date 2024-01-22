@@ -124,3 +124,21 @@ Change to "Ports" tab and open ArgoCD & log in.
 The codespace self-tests on startup so look for a pytest trace showing the health.
 
 If something goes wrong setting up the codespace, logs are sent directly to the Dynatrace SaaS ingest endpoint so `fetch logs` to see what went wrong.
+
+## Updating to Latest
+
+When this repo is updated / has bug fixes applied, it will be necessary to update your forked copy. This can be done easily:
+
+1. In your fork, click the "sync fork" button.
+1. If prompted, discard any commits.
+1. You may need to sync the fork again by clicking "update branch".
+
+At this point, you should see:
+
+![fork not behind upstream](assets/branch-not-behind-upstream.png)
+
+## Cleanup / Destroy Resources
+
+1. TODO: Need a script to delete DT tokens
+2. Go to https://github.com/codespaces and delete the codespace
+3. Go to https://github.com/yourOrg > settings and delete the organization
