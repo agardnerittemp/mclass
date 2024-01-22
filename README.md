@@ -117,7 +117,9 @@ ARGOCDPWD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath
 echo $ARGOCDPWD
 ```
 
-Change to "Ports" tab and open ArgoCD & log in.
+Change to "Ports" tab and open ArgoCD (port 30100) & log in.
+
+Backstage is also available (port 30105).
 
 ## Observability of the Codespace
 
