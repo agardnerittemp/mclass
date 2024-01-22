@@ -37,7 +37,7 @@ GITHUB_REPO_NAME = os.environ.get("RepositoryName") # eg. mclass
 GITHUB_DOT_COM_REPO = f"https://github.com/{GITHUB_ORG_SLASH_REPOSITORY}.git"
 GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN = os.environ.get("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN")
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
-GITHUB_USER = os.environ.get("GITHUB_USER")
+#GITHUB_USER = os.environ.get("GITHUB_USER") # eg. agardnerIT
 DT_OAUTH_CLIENT_ID = os.environ.get("DT_OAUTH_CLIENT_ID")
 DT_OAUTH_CLIENT_SECRET = os.environ.get("DT_OAUTH_CLIENT_SECRET")
 DT_OAUTH_ACCOUNT_URN = os.environ.get("DT_OAUTH_ACCOUNT_URN")
@@ -115,6 +115,9 @@ def wait_for_artifact_to_exist(namespace="default", artifact_type="", artifact_n
 
 def get_otel_collector_endpoint():
     return OPENTELEMETRY_COLLECTOR_ENDPOINT
+
+def get_github_org(github_repo):
+    return github_repo[:github_repo.index("/")]
 
 ##############################
 # DT FUNCTIONS

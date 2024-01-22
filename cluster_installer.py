@@ -162,13 +162,14 @@ output = run_command(["kubectl", "config", "set-context", "--current", "--namesp
 output = run_command(["kubectl", "-n", "opentelemetry", "create", "secret", "generic", "dt-details", f"--from-literal=DT_URL={DT_TENANT_LIVE}", f"--from-literal=DT_OTEL_ALL_INGEST_TOKEN={DT_ALL_INGEST_TOKEN}"])
 
 # create backstage-details secret in backstage namespace
+github_org = get_github_org(github_repo=GITHUB_ORG_SLASH_REPOSITORY)
 output = run_command(["kubectl", "-n", "backstage", "create", "secret", "generic", "backstage-secrets",
                       f"--from-literal=BASE_DOMAIN={CODESPACE_NAME}",
                       f"--from-literal=BACKSTAGE_PORT_NUMBER={BACKSTAGE_PORT_NUMBER}",
                       f"--from-literal=ARGOCD_PORT_NUMBER={ARGOCD_PORT_NUMBER}",
                       f"--from-literal=ARGOCD_TOKEN={ARGOCD_TOKEN}",
                       f"--from-literal=GITHUB_TOKEN={GH_RW_TOKEN}",
-                      f"--from-literal=GITHUB_USER={GITHUB_USER}",
+                      f"--from-literal=GITHUB_ORG={github_org}",
                       f"--from-literal=GITHUB_REPO={GITHUB_REPO_NAME}",
                       f"--from-literal=GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN={GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}",
                       f"--from-literal=DT_TENANT_NAME={DT_ENV_NAME}",
