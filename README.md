@@ -89,7 +89,7 @@ In your fork, click the green "Code" button then change to "Codespaces" and clic
 
 The codespace will launch in a new browser window.
 
-Wait until the `Running postStartCommand...` disappears. It should take ~5 minutes.
+Wait until the `Running postStartCommand...` disappears. It should take ~10 minutes.
 
 ## Usage Instructions (in progress)
 
