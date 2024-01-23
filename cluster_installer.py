@@ -146,8 +146,11 @@ for namespace in namespaces:
 # Which the argo appset will use when polling GitHub's API
 # If un-authenticated API access is used, we hit 403 rate throttling.
 # See also: gitops/manifests/platform/argoconfig/appset.yml
-# TODO: ?? Note: It may not be GITHUB_TOKEN, we may need to use GH_RW_TOKEN
 output = run_command(["kubectl", "-n", "argocd", "create", "secret", "generic" ,"github-token", f"--from-literal=token={GITHUB_TOKEN}"])
+
+# Create bizevent secrets
+output = run_command(["kubectl" "-n" "dynatrace" "create" "secret" "generic" "dt-bizevent-oauth-details" f"--from-literal=dtTenant={DT_TENANT_LIVE}" f"--from-literal=oAuthClientID={DT_OAUTH_CLIENT_ID}" f"--from-literal=oAuthClientSecret={DT_OAUTH_CLIENT_SECRET}" f"--from-literal=accountURN={DT_OAUTH_ACCOUNT_URN}"])
+output = run_command(["kubectl" "-n" "opentelemetry" "create" "secret" "generic" "dt-bizevent-oauth-details" f"--from-literal=dtTenant={DT_TENANT_LIVE}" f"--from-literal=oAuthClientID={DT_OAUTH_CLIENT_ID}" f"--from-literal=oAuthClientSecret={DT_OAUTH_CLIENT_SECRET}" f"--from-literal=accountURN={DT_OAUTH_ACCOUNT_URN}"])
 
 # Install argocd
 output = run_command(["kubectl", "apply", "-n", "argocd", "-f", "https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"])
