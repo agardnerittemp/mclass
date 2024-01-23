@@ -149,8 +149,8 @@ for namespace in namespaces:
 output = run_command(["kubectl", "-n", "argocd", "create", "secret", "generic" ,"github-token", f"--from-literal=token={GITHUB_TOKEN}"])
 
 # Create bizevent secrets
-output = run_command(["kubectl" "-n" "dynatrace" "create" "secret" "generic" "dt-bizevent-oauth-details" f"--from-literal=dtTenant={DT_TENANT_LIVE}" f"--from-literal=oAuthClientID={DT_OAUTH_CLIENT_ID}" f"--from-literal=oAuthClientSecret={DT_OAUTH_CLIENT_SECRET}" f"--from-literal=accountURN={DT_OAUTH_ACCOUNT_URN}"])
-output = run_command(["kubectl" "-n" "opentelemetry" "create" "secret" "generic" "dt-bizevent-oauth-details" f"--from-literal=dtTenant={DT_TENANT_LIVE}" f"--from-literal=oAuthClientID={DT_OAUTH_CLIENT_ID}" f"--from-literal=oAuthClientSecret={DT_OAUTH_CLIENT_SECRET}" f"--from-literal=accountURN={DT_OAUTH_ACCOUNT_URN}"])
+output = run_command(["kubectl", "-n", "dynatrace", "create", "secret", "generic", "dt-bizevent-oauth-details", f"--from-literal=dtTenant={DT_TENANT_LIVE}", f"--from-literal=oAuthClientID={DT_OAUTH_CLIENT_ID}", f"--from-literal=oAuthClientSecret={DT_OAUTH_CLIENT_SECRET}", f"--from-literal=accountURN={DT_OAUTH_ACCOUNT_URN}"])
+output = run_command(["kubectl", "-n", "opentelemetry", "create", "secret", "generic", "dt-bizevent-oauth-details", f"--from-literal=dtTenant={DT_TENANT_LIVE}", f"--from-literal=oAuthClientID={DT_OAUTH_CLIENT_ID}", f"--from-literal=oAuthClientSecret={DT_OAUTH_CLIENT_SECRET}", f"--from-literal=accountURN={DT_OAUTH_ACCOUNT_URN}"])
 
 # Install argocd
 output = run_command(["kubectl", "apply", "-n", "argocd", "-f", "https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"])
