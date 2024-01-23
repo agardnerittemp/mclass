@@ -138,6 +138,13 @@ namespaces = ["argocd", "opentelemetry", "dynatrace", "backstage", "monaco"]
 for namespace in namespaces:
     output = run_command(["kubectl", "create", "namespace", namespace])
 
+# Create Github API token
+# Which the argo appset will use when polling GitHub's API
+# If un-authenticated API access is used, we hit 403 rate throttling.
+# See also: gitops/manifests/platform/argoconfig/appset.yml
+# TODO: ?? Note: It may not be GITHUB_TOKEN, we may need to use GH_RW_TOKEN
+output = run_command("kubectl", "-n", "argocd", "create", "secret", "generic" ,"github-token", f"--from-literal=token={GITHUB_TOKEN}")
+
 # Install argocd
 output = run_command(["kubectl", "apply", "-n", "argocd", "-f", "https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"])
 #output = run_command(["kubectl", "wait", "--for=condition=Available=True", "deployments", "-n", "argocd", "--all", f"--timeout={STANDARD_TIMEOUT}"])

@@ -14,6 +14,13 @@ spec:
       github:
         allBranches: false
         organization: "GITHUB_ORG_SLASH_REPOSITORY"
+        # Use authenticated request to avoid hitting API limit
+        # Which permissions does the token need?
+        # Reference to a Secret containing an access token. (optional)
+        # Needs "read" metadata permissions
+        tokenRef:
+          secretName: github-token
+          key: token
   template:
     metadata:
       name: "{{ repository }}"
