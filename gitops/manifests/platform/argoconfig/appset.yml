@@ -13,7 +13,7 @@ spec:
       cloneProtocol: https
       github:
         allBranches: false
-        organization: "GITHUB_REPO_NAME_PLACEHOLDER"
+        organization: "GITHUB_ORG_SLASH_REPOSITORY"
   template:
     metadata:
       name: "{{ repository }}"
