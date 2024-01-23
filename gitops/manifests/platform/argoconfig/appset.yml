@@ -13,7 +13,7 @@ spec:
       cloneProtocol: https
       github:
         allBranches: false
-        organization: "GITHUB_ORG_SLASH_REPOSITORY"
+        organization: "GITHUB_ORG_NAME_PLACEHOLDER"
         # Use authenticated request to avoid hitting API limit
         # Which permissions does the token need?
         # Reference to a Secret containing an access token. (optional)
