@@ -126,3 +126,11 @@ At this point, you should see:
 1. TODO: Need a script to delete DT tokens
 2. Go to https://github.com/codespaces and delete the codespace
 3. Go to https://github.com/yourOrg > settings and delete the organization
+
+# Debugging
+
+## View Creation Log
+
+```
+tail -f /workspaces/.codespaces/.persistedshare/creation.log
+```
