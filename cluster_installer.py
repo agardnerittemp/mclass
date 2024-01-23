@@ -235,16 +235,6 @@ output = run_command([
     f"--from-literal=dataIngestToken={DT_ALL_INGEST_TOKEN}"
     ])
 
-# Create bizevent secrets
-namespaces = ["dynatrace", "opentelemetry"]
-for namespace in namespaces:
-    output = run_command(["kubectl", "-n", namespace, "create", "secret", "generic", "dt-bizevent-oauth-details",
-                            f"--from-literal=dtTenant={DT_TENANT_LIVE}",
-                            f"--from-literal=oAuthClientID={DT_OAUTH_CLIENT_ID}",
-                            f"--from-literal=oAuthClientSecret={DT_OAUTH_CLIENT_SECRET}",
-                            f"--from-literal=accountURN={DT_OAUTH_ACCOUNT_URN}"
-                        ])
-
 # Create monaco-secret in monaco namespace
 output = run_command(["kubectl", "-n", "monaco", "create", "secret", "generic", "monaco-secret", f"--from-literal=monacoToken={DT_MONACO_TOKEN}"])
 # Create monaco-secret in dynatrace namespace
