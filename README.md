@@ -85,31 +85,13 @@ In your fork, go to: `Settings > Secrets and Variables > Codespaces`. Create sec
 
 ## Starting the Platform
 
-This demo can run on either 2-core or 4-core (depending on the configuration). See below for more details.
+In your fork, click the green "Code" button then change to "Codespaces" and click  "create codespace on main".
 
-To start the demo, click here and choose your forked repository.
+The codespace will launch in a new browser window.
 
-See below to decide the appropriate `Machine Type`
-
-### Run without Keptn
-
-In addition to the secrets above, create another secret called (case sensitive): `INSTALL_KEPTN`
-
-Set the value to `false`.
-
-The demo can run on 2-core infrastructure.
-
-[Create a codespace now](https://github.com/codespaces/new)
-
-### Run with Keptn
-
-The demo needs the 4-core infrastructure.
-
-[Create a codespace now](https://github.com/codespaces/new)
+Wait until the `Running postStartCommand...` disappears. It should take ~5 minutes.
 
 ## Usage Instructions (in progress)
-
-Wait until the `Running postStartCommand...` disappears. It should take 3-4 minutes.
 
 Get argocd password
 ```
