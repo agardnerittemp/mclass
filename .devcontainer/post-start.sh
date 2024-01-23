@@ -3,7 +3,7 @@
 echo "[post-start] start" >> ~/status
 
 # Install and configure cluster
-python3 cluster_installer.py
+#python3 cluster_installer.py
 
 # Start the cluster
 #kind create cluster --config .devcontainer/kind-cluster.yml --wait 300s

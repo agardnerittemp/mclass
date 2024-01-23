@@ -26,4 +26,7 @@ sudo mv argocd /usr/bin
 
 #echo alias k=kubectl >> /home/vscode/.zshrc
 
+# Install and configure cluster
+python3 cluster_installer.py
+
 echo "[post-create] complete" >> ~/status
