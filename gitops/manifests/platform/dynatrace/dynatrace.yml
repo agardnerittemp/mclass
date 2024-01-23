@@ -6158,10 +6158,10 @@ spec:
       # Optional: Defines resources requests and limits for the initContainer
       # See more: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
       #
-      # initResources:
-      #   requests:
-      #     cpu: 100m
-      #     memory: 512Mi
+      initResources:
+        requests:
+          cpu: 10m
+      #    memory: 512Mi
       #   limits:
       #     cpu: 300m
       #     memory: 1.5Gi
