@@ -5,3 +5,5 @@ metadata:
   name: ingress-nginx
   labels:
     dt.owner: "platform_team"
+    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/name: ingress-nginx
