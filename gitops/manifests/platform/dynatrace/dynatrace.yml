@@ -5767,10 +5767,10 @@ spec:
         terminationMessagePolicy: File
         resources:
           limits:
-            cpu: 10m
+            cpu: 50m
             memory: 100Mi
           requests:
-            cpu: 50m
+            cpu: 10m
             memory: 100Mi
         securityContext:
           allowPrivilegeEscalation: false
