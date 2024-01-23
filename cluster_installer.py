@@ -195,7 +195,7 @@ wait_for_artifact_to_exist(namespace="backstage", artifact_type="deployment", ar
 #wait_for_deployment_to_exist(namespace="backstage", deployment_name="backstage")
 
 # Then wait for it to be ready
-output = run_command(["kubectl", "wait", "--for=condition=Available=True", "deployments", "-n", "backstage", "backstage", f"--timeout={STANDARD_TIMEOUT}"])
+#output = run_command(["kubectl", "wait", "--for=condition=Available=True", "deployments", "-n", "backstage", "backstage", f"--timeout={STANDARD_TIMEOUT}"])
 
 # backstage deployment is ready
 # restart backstage to pick up secret and start successfully
