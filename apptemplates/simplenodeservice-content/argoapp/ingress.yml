@@ -15,10 +15,11 @@ spec:
     - host: "CODESPACE_NAME_PLACEHOLDER-30103.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN_PLACEHOLDER"
       http:
         paths:
-          - path: "/${{ values.projectName }}-${{ values.teamIdentifier }}-${{ values.releaseStage }}"
+          - path: "/"
+          #- path: "/${{ values.projectName }}-${{ values.teamIdentifier }}-${{ values.releaseStage }}"
             pathType: Prefix
             backend:
               service:
                 name: "${{ values.projectName }}-${{ values.teamIdentifier }}"
                 port:
-                  number: 80
+                  number: 8080
