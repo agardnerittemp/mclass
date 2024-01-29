@@ -343,7 +343,7 @@ spec:
   ports:
   - appProtocol: http
     name: http
-    port: 30103
+    port: 80
     protocol: TCP
     targetPort: http
   - appProtocol: https
@@ -454,8 +454,8 @@ spec:
           timeoutSeconds: 1
         name: controller
         ports:
-        - containerPort: 30103
-          hostPort: 30103
+        - containerPort: 80
+          hostPort: 80
           name: http
           protocol: TCP
         - containerPort: 443
