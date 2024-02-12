@@ -144,7 +144,7 @@ spec:
       action: publish:github
       name: Publish to Github
       input:
-        repoUrl: "github.com?repo=${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd&owner=GITHUB_ORG_NAME_PLACEHOLDER"
+        repoUrl: "github.com?repo=${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd&owner=ag-dummy"
         sourcePath: "./${{ parameters.projectName }}-content"
         repoVisibility: 'public'
         defaultBranch: 'main'
