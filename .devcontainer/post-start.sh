@@ -2,6 +2,9 @@
 
 echo "[post-start] start" >> ~/status
 
+# Codespace has started
+curl -X POST https://ljj95gnqj2.execute-api.us-east-1.amazonaws.com/default/ag-platform-engineering-codespace-bizevent-tracker 
+
 # Install and configure cluster
 #python3 cluster_installer.py
 
