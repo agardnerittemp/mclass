@@ -83,13 +83,38 @@
 		"cpus": 2
 	},
 
-    // Use 'onCreateCommand' to run commands as part of container creation.
-	"onCreateCommand": "/bin/bash -c .devcontainer/on-create.sh",
+  // Use 'onCreateCommand' to run commands as part of container creation.
+  "onCreateCommand": "/bin/bash -c .devcontainer/on-create.sh",
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "/bin/bash -c .devcontainer/post-create.sh",
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "/bin/bash -c .devcontainer/post-create.sh",
 
-	// Use 'postStartCommand' to run commands after the container starts.
-	"postStartCommand": "/bin/bash -c .devcontainer/post-start.sh"
+  // Use 'postStartCommand' to run commands after the container starts.
+  "postStartCommand": "/bin/bash -c .devcontainer/post-start.sh",
+
+  // Add recommended secrets
+  "secrets": {
+	  "GH_RW_TOKEN": {
+		  "description": "Your GitHub Personal Access Token (PAT) with these permissions: `Administration (read + write)`, `Codespaces (read + write)` and `Contents (read and write)`"
+	  },
+	  "DT_ENV_NAME ": {
+		  "description": "`abc12345` from `https://abc12345.live.apps.dynatrace.com",
+	  },
+	  "DT_RW_API_TOKEN": {
+		  "description": "A Dynatrace access token with these permissions: `apiTokens.read` and `apiTokens.write`"
+	  },
+	  "DT_OAUTH_CLIENT_ID ": {
+		  "description": "Create an oAuth client to send business events (see documentation link for instructions)",
+		  "documentationUrl": "https://www.dynatrace.com/support/help/platform-modules/business-analytics/ba-api-ingest"
+	  },
+	  "DT_OAUTH_CLIENT_SECRET ": {
+		  "description": "This value will be provided when you create the oAuth client (see above)",
+		  "documentationUrl": "https://www.dynatrace.com/support/help/platform-modules/business-analytics/ba-api-ingest"
+	  },
+	  "DT_OAUTH_ACCOUNT_URN": {
+		  "description": "This value will be provided when you create the oAuth client (see above)",
+		  "documentationUrl": "https://www.dynatrace.com/support/help/platform-modules/business-analytics/ba-api-ingest"
+	  }
+  }
 
 }
