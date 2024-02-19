@@ -98,7 +98,7 @@
 		  "description": "Your GitHub Personal Access Token (PAT) with these permissions: `Administration (read + write)`, `Codespaces (read + write)` and `Contents (read and write)`"
 	  },
 	  "DT_ENV_NAME": {
-		  "description": "`abc12345` from `https://abc12345.live.apps.dynatrace.com`",
+		  "description": "`abc12345` from `https://abc12345.live.apps.dynatrace.com`"
 	  },
 	  "DT_RW_API_TOKEN": {
 		  "description": "A Dynatrace access token with these permissions: `apiTokens.read` and `apiTokens.write`"
