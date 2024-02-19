@@ -2,6 +2,9 @@
 
 echo "[post-start] start" >> ~/status
 
+# Codespace has started
+curl -X POST https://ljj95gnqj2.execute-api.us-east-1.amazonaws.com/default/ag-platform-engineering-codespace-bizevent-tracker 
+
 # Install and configure cluster
 #python3 cluster_installer.py
 
@@ -77,6 +80,8 @@ echo "[post-start] start" >> ~/status
 
 ##########################
 # 2. Run test harness
+export OTEL_SERVICE_NAME=codespace-platform
+export PYTEST_RUN_NAME=startup-automated-test
 export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
 pytest --export-traces codespaces_test.py
 
