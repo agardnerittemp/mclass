@@ -31,8 +31,8 @@ You should now have 4 pieces of information:
 
 Create a Dynatrace access token with the following permissions. This token will be used by the setup script to automatically create all other required DT tokens.
 
-1. apiTokens.read
-1. apiTokens.write
+1. `apiTokens.read`
+1. `apiTokens.write`
 
 You should now have 5 pieces of information:
 

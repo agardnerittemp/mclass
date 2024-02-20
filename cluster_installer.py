@@ -64,6 +64,10 @@ DT_MONACO_TOKEN = create_dt_api_token(token_name="[devrel demo] DT_MONACO_TOKEN"
     "WriteConfig"
 ], dt_rw_api_token=DT_RW_API_TOKEN, dt_tenant_live=DT_TENANT_LIVE)
 
+# Upload DT Assets
+
+upload_asset(path="dynatraceassets/notebooks/analyze-argocd-notification-events.json", name="test6", type="notebook")
+
 # Should Keptn be installed or not?
 INSTALL_KEPTN = os.environ.get("INSTALL_KEPTN", "true")
 

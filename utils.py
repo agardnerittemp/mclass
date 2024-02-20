@@ -245,6 +245,58 @@ def build_dt_urls(dt_env, dt_env_name):
     
     return dt_tenant_apps, dt_tenant_live
 
+def get_sso_auth_token(sso_oauth_url, oauth_client_id, oauth_client_secret, oauth_urn, permissions):
+    
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+    oauth_body = {
+        "grant_type": "client_credentials",
+        "client_id": oauth_client_id,
+        "client_secret": oauth_client_secret,
+        "resource": account_urn,
+        "scope": permissions
+    }
+
+    ##############################
+    # Step 1: Get Access Token
+    ##############################
+    access_token_resp = requests.post(
+        url=sso_token_url,
+        data=oauth_body
+    )
+
+    if access_token_resp.status_code != 200:
+        print(f"{access_token_resp.json()}")
+        return "OAuth error occurred. Data NOT sent. Please investigate."
+
+    access_token_json = access_token_resp.json()
+    access_token_value = access_token_json['access_token']
+
+    return access_token_value
+
+def upload_dt_asset(sso_token_url, path, name, type, upload_content_type, dt_tenant_apps):
+
+    oauth_access_token = get_sso_auth_token(sso_token_url=sso_token_url)
+
+    headers = {
+        "Content-Type": "multipart/form-data",
+        "Authorization": f"Bearer {oauth_access_token}"
+    }
+
+    params = {
+        "name": name,
+        "type": type
+        "content": f"@{path};type={upload_content_type}"
+    }
+
+    upload_resp = requests.post(
+        url=f"{dt_tenant_apps}/platform/document/v1/documents"
+        params=params
+    )
+
+    return upload_resp
+
 
 
 
