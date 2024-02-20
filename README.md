@@ -12,9 +12,13 @@ Make a note of the Dynatrace environment name. This the the first part of the UR
 
 ### Create DT oAuth Client
 
+> The following link will provide some oAuth permissions. To these, please **also** include the following
+> - `document:documents:write`
+  - `document:documents:read`
+
 Follow [the documentation](https://www.dynatrace.com/support/help/platform-modules/business-analytics/ba-api-ingest) to set up an OAuth client + policy + bind to your service user account email.
 
-This is required so the platform can send business events (aka bizevents) to Dynatrace.
+This is required so that the codespace can create documents (notebooks + dashboards) in Dynatrace and the platform can send business events (aka bizevents) and to Dynatrace.
 
 You should now have 4 pieces of information:
 
