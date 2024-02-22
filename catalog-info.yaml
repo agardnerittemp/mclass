@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: app-creator
-  title: Create a New Application (7)
+  title: Create a New Application (8)
   description: Create a new application from a template
   tags:
     - simplenodeservice
@@ -150,6 +150,7 @@ spec:
       input:
         repoUrl: "github.com?repo=mclass&owner=ag-dummy"
         branchName: "main"
+        targetBranchName: "main"
         title: "Onboard ${{ parameters.projectName }} for ${{ parameters.teamIdentifier }} in ${{ parameters.releaseStage }}"
         description: "This is the description of the PR for ${{ parameters.projectName }} > ${{ parameters.teamIdentifier }} in ${{ parameters.releaseStage }}"
     #     sourcePath: "./${{ parameters.projectName }}-content"

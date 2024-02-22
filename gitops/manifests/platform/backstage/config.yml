@@ -52,11 +52,7 @@ data:
     integrations:
       github:
         - host: github.com
-          token: ${GITHUB_TOKEN}
-      # gitlab:
-      #   - host: gitlab.BASE_DOMAIN_PLACEHOLDER
-      #     apiBaseUrl: https://gitlab.BASE_DOMAIN_PLACEHOLDER/api/v4
-      #     token: ${GITLAB_TOKEN}
+          token: ${GH_RW_TOKEN}
     catalog:
       rules:
         - allow: [Component, Template, User, Group]
