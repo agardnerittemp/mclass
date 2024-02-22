@@ -23,7 +23,7 @@ spec:
         notifications.argoproj.io/subscribe.on-sync-running.dynatrace: ""
         notifications.argoproj.io/subscribe.on-sync-succeeded.dynatrace: ""
     spec:
-      project: "{{.path.basename}}"
+      project: "default"
       source:
         repoURL: "https://github.com/ag-dummy/mclass.git"
         targetRevision: HEAD
