@@ -25,7 +25,7 @@ spec:
     spec:
       project: "{{.path.basename}}"
       source:
-        repoURL: "{{ repository }}"
+        repoURL: "https://github.com/ag-dummy/mclass.git"
         targetRevision: HEAD
         path: '{{.path.path}}'
       destination:
