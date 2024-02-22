@@ -4,6 +4,7 @@ import subprocess
 import glob
 import time
 import os
+import json
 
 GEOLOCATION_DEV = "GEOLOCATION-0A41430434C388A9"
 GEOLOCATION_SPRINT = "GEOLOCATION-3F7C50D0C9065578"
@@ -245,7 +246,7 @@ def build_dt_urls(dt_env, dt_env_name):
     
     return dt_tenant_apps, dt_tenant_live
 
-def get_sso_auth_token(sso_oauth_url, oauth_client_id, oauth_client_secret, oauth_urn, permissions):
+def get_sso_auth_token(sso_token_url, oauth_client_id, oauth_client_secret, oauth_urn, permissions):
     
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -254,7 +255,7 @@ def get_sso_auth_token(sso_oauth_url, oauth_client_id, oauth_client_secret, oaut
         "grant_type": "client_credentials",
         "client_id": oauth_client_id,
         "client_secret": oauth_client_secret,
-        "resource": account_urn,
+        "resource": oauth_urn,
         "scope": permissions
     }
 
@@ -275,31 +276,61 @@ def get_sso_auth_token(sso_oauth_url, oauth_client_id, oauth_client_secret, oaut
 
     return access_token_value
 
-def upload_dt_asset(sso_token_url, path, name, type, upload_content_type, dt_tenant_apps):
+# TODO: This is naieve. Multiple POSTs for the same content creates duplicated. Improve.
+def upload_dt_document_asset(sso_token_url, path, name, type, dt_tenant_apps, upload_content_type="application/json"):
 
-    oauth_access_token = get_sso_auth_token(sso_token_url=sso_token_url)
+    if type != "notebook" and type != "dashboard":
+        exit("type must be one of these values: [notebook, dashboard]")
+
+    endpoint = f"{dt_tenant_apps}/platform/document/v1/documents"
+    permissions = "document:documents:write"
+
+    oauth_access_token = get_sso_auth_token(sso_token_url=sso_token_url, oauth_client_id=DT_OAUTH_CLIENT_ID, oauth_client_secret=DT_OAUTH_CLIENT_SECRET, oauth_urn=DT_OAUTH_ACCOUNT_URN, permissions=permissions)
 
     headers = {
-        "Content-Type": "multipart/form-data",
+        "accept": "application/json",
         "Authorization": f"Bearer {oauth_access_token}"
     }
 
-    params = {
-        "name": name,
-        "type": type
-        "content": f"@{path};type={upload_content_type}"
-    }
+    with open(path, mode="r", encoding="UTF-8") as f:
 
-    upload_resp = requests.post(
-        url=f"{dt_tenant_apps}/platform/document/v1/documents"
-        params=params
-    )
+        file_content = f.read()
+
+        parameters = {
+            "name": name,
+            "type": type
+        }
+
+        upload_resp = requests.post(
+            url=endpoint,
+            params=parameters,
+            files={"content": (path, f"{file_content}", upload_content_type)},
+            headers=headers
+        )
 
     return upload_resp
 
+def upload_dt_workflow_asset(sso_token_url, path, name, dt_tenant_apps, upload_content_type="application/json"):
 
+    endpoint = f"{dt_tenant_apps}/platform/automation/v1/workflows"
+    permissions = "automation:workflows:write"
 
+    oauth_access_token = get_sso_auth_token(sso_token_url=sso_token_url, oauth_client_id=DT_OAUTH_CLIENT_ID, oauth_client_secret=DT_OAUTH_CLIENT_SECRET, oauth_urn=DT_OAUTH_ACCOUNT_URN, permissions=permissions)
 
-# Build DT environment URLs
-# DT_TENANT_APPS, DT_TENANT_LIVE = build_dt_urls(dt_env_name=DT_ENV_NAME, dt_env=DT_ENV)
-# DT_ALL_INGEST_TOKEN = create_dt_api_token()
+    headers = {
+        "accept": "application/json",
+        "Authorization": f"Bearer {oauth_access_token}"
+    }
+
+    with open(path, mode="r", encoding="UTF-8") as f:
+
+        file_content = f.read()
+        file_json = json.loads(file_content)
+
+        upload_resp = requests.post(
+            url=endpoint,
+            json=file_json,
+            headers=headers
+        )
+
+    return upload_resp
