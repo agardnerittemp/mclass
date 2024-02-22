@@ -8,10 +8,10 @@ spec:
   goTemplateOptions: ["missingkey=error"]
   generators:
   - git:
-      repoURL: "{{ url }}"
+      repoURL: "{{ repository }}"
       revision: HEAD
       directories:
-      - path: customer-apps/*
+      - path: "customer-apps/*"
   template:
     metadata:
       name: '{{.path.basename}}'
