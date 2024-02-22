@@ -12,10 +12,10 @@ GEOLOCATION_LIVE = "GEOLOCATION-4ACFC9B6B78D5BB1"
 SSO_TOKEN_URL_DEV = "https://sso-dev.dynatracelabs.com/sso/oauth2/token"
 SSO_TOKEN_URL_SPRINT = "https://sso-sprint.dynatracelabs.com/sso/oauth2/token"
 SSO_TOKEN_URL_LIVE = "https://sso.dynatrace.com/sso/oauth2/token"
-DT_RW_API_TOKEN = os.environ.get("DT_RW_API_TOKEN") # token to create all other tokens
-DT_ENV_NAME = os.environ.get("DT_ENV_NAME") # abc12345
+DT_RW_API_TOKEN = os.environ.get("DT_RW_API_TOKEN", "") # token to create all other tokens
+DT_ENV_NAME = os.environ.get("DT_ENV_NAME" , "") # abc12345
 DT_ENV = os.environ.get("DT_ENV", "live") # dev, sprint" or "live"
-GH_RW_TOKEN = os.environ.get("GH_RW_TOKEN") # Token ArgoCD uses to create "customer-apps" repositories. TODO: What permissions does this need?
+GH_RW_TOKEN = os.environ.get("GH_RW_TOKEN", "") # Token ArgoCD uses to create "customer-apps" repositories. TODO: What permissions does this need?
 
 # If any of these words are found in command execution output
 # The printing of the output to console will be suppressed
@@ -31,17 +31,17 @@ WAIT_FOR_ACCOUNTS_TIMEOUT = 60
 
 COLLECTOR_WAIT_TIMEOUT_SECONDS = 30
 OPENTELEMETRY_COLLECTOR_ENDPOINT = "http://localhost:4318"
-CODESPACE_NAME = os.environ.get("CODESPACE_NAME")
+CODESPACE_NAME = os.environ.get("CODESPACE_NAME", "")
 
-GITHUB_ORG_SLASH_REPOSITORY = os.environ.get("GITHUB_REPOSITORY") # eg. yourOrg/yourRepo
-GITHUB_REPO_NAME = os.environ.get("RepositoryName") # eg. mclass
+GITHUB_ORG_SLASH_REPOSITORY = os.environ.get("GITHUB_REPOSITORY, "") # eg. yourOrg/yourRepo
+GITHUB_REPO_NAME = os.environ.get("RepositoryName", "") # eg. mclass
 GITHUB_DOT_COM_REPO = f"https://github.com/{GITHUB_ORG_SLASH_REPOSITORY}.git"
 GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN = os.environ.get("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN")
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 #GITHUB_USER = os.environ.get("GITHUB_USER") # eg. yourOrg
-DT_OAUTH_CLIENT_ID = os.environ.get("DT_OAUTH_CLIENT_ID")
-DT_OAUTH_CLIENT_SECRET = os.environ.get("DT_OAUTH_CLIENT_SECRET")
-DT_OAUTH_ACCOUNT_URN = os.environ.get("DT_OAUTH_ACCOUNT_URN")
+DT_OAUTH_CLIENT_ID = os.environ.get("DT_OAUTH_CLIENT_ID", "")
+DT_OAUTH_CLIENT_SECRET = os.environ.get("DT_OAUTH_CLIENT_SECRET", "")
+DT_OAUTH_ACCOUNT_URN = os.environ.get("DT_OAUTH_ACCOUNT_URN", "")
 
 def run_command(args, ignore_errors=False):
     output = subprocess.run(args, capture_output=True, text=True)
