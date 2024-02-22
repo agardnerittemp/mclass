@@ -1,9 +1,0 @@
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: "cust1-team01-preprod-cd"
-  labels:
-    dt.owner: "team01"
-  annotations:
-    keptn.sh/lifecycle-toolkit: "false"
