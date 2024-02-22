@@ -1,0 +1,24 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "cust1-team01"
+  namespace: "cust1-team01-preprod-cd"
+  labels:
+    dt.owner: "team01"
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+spec:
+  rules:
+    - host: "probable-fiesta-xrxxg5pp4p6f9vwv-80.app.github.dev"
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: "cust1-team01"
+                port:
+                  number: 8080
