@@ -27,6 +27,7 @@ from utils import *
 # DT_OAUTH_CLIENT_SECRET = os.environ.get("DT_OAUTH_CLIENT_SECRET")
 # DT_OAUTH_ACCOUNT_URN = os.environ.get("DT_OAUTH_ACCOUNT_URN")
 
+CODESPACE_WILL_EXIT_AND_DESTROY = False
 if (
     DT_RW_API_TOKEN is None or
     DT_ENV_NAME is None or
@@ -36,10 +37,42 @@ if (
     DT_OAUTH_CLIENT_SECRET is None or
     DT_OAUTH_ACCOUNT_URN is None
 ):
-    exit("Missing mandatory environment variables. Cannot proceed. Exiting.")
+    CODESPACE_WILL_EXIT_AND_DESTROY = True
+else:
+    # TEMP: Does DT_ENV and DT_ENV_NAME come in as None or ""?
+    # TODO: Remove
+    print(f"[cluster_installer.py] [temp] {DT_ENV_NAME} = {DT_ENV}")
 
 # Build DT environment URLs
-DT_TENANT_APPS, DT_TENANT_LIVE = build_dt_urls(dt_env_name=DT_ENV_NAME, dt_env=DT_ENV)
+DT_TENANT_APPS = ""
+DT_TENANT_LIVE = ""
+CAN_SEND_LOG_TO_DT = True
+try:
+    DT_TENANT_APPS, DT_TENANT_LIVE = build_dt_urls(dt_env_name=DT_ENV_NAME, dt_env=DT_ENV)
+except:
+    CAN_SEND_LOG_TO_DT = False
+    print("Error caught building DT URLs. User has forgotten to provide DT_ENV_NAME and / or DT_ENV. Log cannot be sent to DT. Codespace will exit.")
+
+if CODESPACE_WILL_EXIT_AND_DESTROY:
+    if CAN_SEND_LOG_TO_DT:
+        # Create a log ingest token
+        DT_LOG_INGEST_TOKEN = create_dt_api_token(token_name="[devrel demo] DT_CODESPACE_ERROR_LOG_INGEST_TOKEN", scopes=["logs.ingest"], dt_rw_api_token=DT_RW_API_TOKEN, dt_tenant_live=DT_TENANT_LIVE)
+
+        send_log_to_dt_or_otel_collector(
+            success=False,
+            log_level="ERROR",
+            log_source=f"[codespaces] [{CODESPACE_NAME}]",
+            msg_string=f"Error occurred creating codespace. User did not set all required variables. Codespace: {CODESPACE_NAME} was destroyed",
+            otel_collector_endpoint="",
+            allow_insecure=False,
+            dt_tenant_id=DT_ENV,
+            dt_env=DT_ENV_NAME,
+            dt_api_token="",
+            trace_id="",
+            span_id=""
+        )
+
+    exit("Missing mandatory environment variables. Cannot proceed. Exiting.")
 
 # Get correct SSO URL
 DT_SSO_TOKEN_URL = get_sso_token_url(dt_env=DT_ENV)

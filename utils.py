@@ -123,19 +123,36 @@ def get_github_org(github_repo):
 ##############################
 # DT FUNCTIONS
 
-def send_log_to_dt_or_otel_collector(success, msg_string="", dt_api_token="", endpoint=get_otel_collector_endpoint(), destroy_codespace=False, dt_tenant_live=""):
+# Helper function which transparently sends a log line
+# to either an OTEL collector HTTP endpoint (port 4318)
+# or the DT direct ingest endpoint
+def send_log_to_dt_or_otel_collector(success, log_level="INFO", log_source="", msg_string="", otel_collector_endpoint="http://localhost:4318", allow_insecure=False, dt_tenant_id="", dt_env="live", dt_api_token="", destroy_codespace=False, trace_id="", span_id=""):
 
     attributes_list = [{"key": "success", "value": { "boolean": success }}]
 
     timestamp = str(time.time_ns())
 
-    if "dynatrace" in endpoint:
+    # No DT tenant ID provided
+    if dt_tenant_id != "" and dt_api_token != "":
         # Local collector not available
         # Send directly to cluster
+        # But first build the DT endpoint
+        dt_domain = "dynatrace.com"
+        if dt_env == "sprint" or dt_env == "dev":
+            dt_domain = "dynatracelabs.com"
+        
+        endpoint = f"https://{dt_tenant_id}.{dt_env}.{dt_domain}/api/v2/logs/ingest"
+
+        if not allow_insecure and endpoint.startswith("http://"):
+            exit("Sending failed. Attempted to send to an insecure endpoint without using --insecure=True")
+
         payload = {
             "content": msg_string,
-            "log.source": "testharness.py",
-            "severity": "error"
+            "log.source": log_source,
+            "attributes": attributes_list,
+            "loglevel": log_level,
+            "trace_id": trace_id,
+            "span_id": span_id
         }
 
         headers = {
@@ -144,13 +161,21 @@ def send_log_to_dt_or_otel_collector(success, msg_string="", dt_api_token="", en
             "Content-Type": "application/json"
         }
 
-        requests.post(f"{dt_tenant_live}/api/v2/logs/ingest", 
+        response = requests.post(
+          url = endpoint, 
           headers = headers,
           json=payload,
           timeout=5
         )
-    else: # Send via local OTEL collector
+
+        # Expect an HTTP 204 on success
+        if response.status_code == 204:
+            print(f"Log line successfully sent using direct to DT method.")
+        else:
+            print(f"Something went wrong sending log line directly to DT ingest endpoint. Status code={response.status_code}. Error: {response.json()}")
+    else: # Send via non DT endpoint (ie. OTEL collector)
         payload = {
+            "source": log_source,
             "resourceLogs": [{
                 "resource": {
                     "attributes": []
@@ -163,27 +188,41 @@ def send_log_to_dt_or_otel_collector(success, msg_string="", dt_api_token="", en
                             "stringValue": msg_string
                         },
                         "attributes": attributes_list,
-                        "droppedAttributesCount": 0
+                        "droppedAttributesCount": 0,
+                        "resource": log_source,
+                        "traceId": "",
+                        "spanId": "",
+                        "severityText": log_level
                     }]
                 }]
             }]
         }
 
-        requests.post(f"{endpoint}/v1/logs", headers={ "Content-Type": "application/json" }, json=payload, timeout=5)
+        response = requests.post(
+            url = f"{otel_collector_endpoint}/v1/logs",
+            headers={ "Content-Type": "application/json" },
+            json=payload,
+            timeout=5
+        )
 
+        # Expect an HTTP 200 on success
+        if response.status_code == 200:
+            print("Log line successfully sent via OTEL collector.")
+        else:
+            print(f"Something went wrong sending log line directly to DT ingest endpoint. Status code={response.status_code}. Error: {response.json()}")
+    
     # If user wishes to immediately
     # destroy the codespace, do it now
     # Note: Log lines inside here must have destroy_codespace=False to avoid circular calls
-    destroy_codespace = False # DEBUG: TODO remove. Temporarily override while developing
     if destroy_codespace:
-        send_log_to_dt_or_otel_collector(success=True, msg_string=f"Destroying codespace: {CODESPACE_NAME}", destroy_codespace=False, dt_tenant_live=dt_tenant_live)
+        send_log_to_dt_or_otel_collector(success=True, log_level=log_level, log_source=log_source, msg_string=f"Destroying codespace: {CODESPACE_NAME}", otel_collector_endpoint=otel_collector_endpoint, allow_insecure=allow_insecure, dt_tenant_id=dt_tenant_id, dt_env=dt_env, dt_api_token=dt_api_token, destroy_codespace=False, trace_id="", span_id="")
 
         destroy_codespace_output = subprocess.run(["gh", "codespace", "delete", "--codespace", CODESPACE_NAME], capture_output=True, text=True)
 
         if destroy_codespace_output.returncode == 0:
-            send_log_to_dt_or_otel_collector(success=True, msg_string=f"codespace {CODESPACE_NAME} deleted successfully", destroy_codespace=False, dt_tenant_live=dt_tenant_live)
+            send_log_to_dt_or_otel_collector(success=True, log_level=log_level, log_source=log_source, msg_string=f"Codespace: {CODESPACE_NAME} deleted successfully", otel_collector_endpoint=otel_collector_endpoint, allow_insecure=allow_insecure, dt_tenant_id=dt_tenant_id, dt_env=dt_env, dt_api_token=dt_api_token, destroy_codespace=False, trace_id="", span_id="")
         else:
-            send_log_to_dt_or_otel_collector(success=False, msg_string=f"failed to delete codespace {CODESPACE_NAME}. {destroy_codespace_output.stderr}", destroy_codespace=False, dt_tenant_live=dt_tenant_live)
+            send_log_to_dt_or_otel_collector(success=True, log_level=log_level, log_source=log_source, msg_string=f"failed to delete codespace {CODESPACE_NAME}. {destroy_codespace_output.stderr}", otel_collector_endpoint=otel_collector_endpoint, allow_insecure=allow_insecure, dt_tenant_id=dt_tenant_id, dt_env=dt_env, dt_api_token=dt_api_token, destroy_codespace=False, trace_id="", span_id="")
 
 def get_geolocation(dt_env):
     if dt_env.lower() == "dev":
