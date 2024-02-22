@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: app-creator
-  title: Create a New Application (4)
+  title: Create a New Application (5)
   description: Create a new application from a template
   tags:
     - simplenodeservice
@@ -141,17 +141,20 @@ spec:
     #     securityScans: ${{ parameters.includeSecurityScans }}
     #     projectName: "./${{ parameters.projectName }}-template"
     - id: publish
-      action: github:repo:push
+      action: publish:github:pull-request
       name: Push Changes to Github
       input:
         repoUrl: "github.com?repo=mclass&owner=ag-dummy"
+        branchName: "main"
+        title: "Onboard ${{ parameters.projectName }} for ${{ parameters.teamIdentifier }} in ${{ parameters.releaseStage }}"
     #     sourcePath: "./${{ parameters.projectName }}-content"
     #     repoVisibility: 'public'
-        defaultBranch: 'main'
-        gitAuthorName: ${{ parameters.teamIdentifier }}
-        gitAuthorEmail: "${{ parameters.teamIdentifier }}@dynatrace.training"
-        gitCommitMessage: "Initial commit from ${{ parameters.teamIdentifier }} for template ${{ parameters.projectName }} in ${{ parameters.releaseStage }}"
+        # defaultBranch: 'main'
+        # gitAuthorName: ${{ parameters.teamIdentifier }}
+        # gitAuthorEmail: "${{ parameters.teamIdentifier }}@dynatrace.training"
+        commitMessage: "Initial commit from ${{ parameters.teamIdentifier }} for template ${{ parameters.projectName }} in ${{ parameters.releaseStage }}"
         sourcePath: "customer-apps"
+        targetPath: "customer-apps"
     #     protectDefaultBranch: false
         #topics: ["${{ parameters.projectName }}", "${{ parameters.releaseStage }}", "${{ parameters.teamIdentifier }}", "from-template", "backstage" ]
     # - id: catalog
