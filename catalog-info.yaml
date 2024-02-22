@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: app-creator
-  title: Create a New Application (5)
+  title: Create a New Application (6)
   description: Create a new application from a template
   tags:
     - simplenodeservice
@@ -41,16 +41,19 @@ spec:
           type: string
           pattern: '^team\d+$' # must match `team` + 1 or more digit. eg. `team1`, `team123`, `team9843` all valid. `team` invalid.
           ui:placeholder: 'teamIdentifier'
+          default: "team01"
         teamFullName:
           title: Full name of the team 
           description: Your real team name (eg. Team Best App Ever)
           type: string
           ui:placeholder: 'teamFullName'
+          default: "Team 01"
         teamEmail:
           title: Team Email
           description: Email to reach your team (eg. team01@dynatrace.training)
           type: string
           ui:placeholder: 'teamEmail'
+          default: "team01@example.com"
     - title: Application Details
       required:
         - appVersion
@@ -82,7 +85,7 @@ spec:
           title: "Include Security scans?"
           description: "Scan this app automatically and push results to Dynatrace?"
           type: boolean
-          default: false
+          default: true
         includeDTConfig:
           title: "Include Dynatrace Configuration?"
           description: "Include level 1 (basic) Dynatrace Configuration as Code for this application?"
@@ -147,6 +150,7 @@ spec:
         repoUrl: "github.com?repo=mclass&owner=ag-dummy"
         branchName: "main"
         title: "Onboard ${{ parameters.projectName }} for ${{ parameters.teamIdentifier }} in ${{ parameters.releaseStage }}"
+        description: "This is the description of the PR for ${{ parameters.projectName }} > ${{ parameters.teamIdentifier }} in ${{ parameters.releaseStage }}"
     #     sourcePath: "./${{ parameters.projectName }}-content"
     #     repoVisibility: 'public'
         # defaultBranch: 'main'
