@@ -8,7 +8,7 @@ metadata:
     dt.owner: "team01"
 spec:
   ports:
-  - port: 80
+  - port: 8080
     targetPort: http
     protocol: TCP
     name: http
