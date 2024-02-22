@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: app-creator
-  title: Create a New Application (2)
+  title: Create a New Application (3)
   description: Create a new application from a template
   tags:
     - simplenodeservice
@@ -93,8 +93,8 @@ spec:
       name: Fetch Base
       action: fetch:template
       input:
-        url: "./apptemplates/${{ parameters.projectName }}-content"
-        targetPath: "../customer-apps/${{ parameters.projectName }}-${{ parameters.teamIdentifier}}-${{ parameters.releaseStage }}"
+        url: "apptemplates/${{ parameters.projectName }}-content"
+        targetPath: "customer-apps/${{ parameters.projectName }}-${{ parameters.teamIdentifier}}-${{ parameters.releaseStage }}"
         values:
          projectName: ${{ parameters.projectName }}
          teamIdentifier: ${{ parameters.teamIdentifier }}
