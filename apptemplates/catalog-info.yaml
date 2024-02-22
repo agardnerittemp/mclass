@@ -94,7 +94,7 @@ spec:
       action: fetch:template
       input:
         url: "./${{ parameters.projectName }}-content"
-        targetPath: "./${{ parameters.projectName }}-content"
+        targetPath: "../customer-apps/${{ parameters.projectName }}-${{ parameters.teamIdentifier}}-${{ parameters.releaseStage }}"
         values:
          projectName: ${{ parameters.projectName }}
          teamIdentifier: ${{ parameters.teamIdentifier }}
@@ -140,32 +140,32 @@ spec:
     #     listWorkspace: true
     #     securityScans: ${{ parameters.includeSecurityScans }}
     #     projectName: "./${{ parameters.projectName }}-template"
-    - id: publish
-      action: publish:github
-      name: Publish to Github
-      input:
-        repoUrl: "github.com?repo=${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd&owner=ag-dummy"
-        sourcePath: "./${{ parameters.projectName }}-content"
-        repoVisibility: 'public'
-        defaultBranch: 'main'
-        gitAuthorName: ${{ parameters.teamIdentifier }}
-        gitAuthorEmail: "${{ parameters.teamIdentifier }}@dynatrace.training"
-        gitCommitMessage: "Initial commit from ${{ parameters.teamIdentifier }} for template ${{ parameters.projectName }} in ${{ parameters.releaseStage }}"
-        protectDefaultBranch: false
+    # - id: publish
+    #   action: publish:github
+    #   name: Publish to Github
+    #   input:
+    #     repoUrl: "github.com?repo=${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd&owner=ag-dummy"
+    #     sourcePath: "./${{ parameters.projectName }}-content"
+    #     repoVisibility: 'public'
+    #     defaultBranch: 'main'
+    #     gitAuthorName: ${{ parameters.teamIdentifier }}
+    #     gitAuthorEmail: "${{ parameters.teamIdentifier }}@dynatrace.training"
+    #     gitCommitMessage: "Initial commit from ${{ parameters.teamIdentifier }} for template ${{ parameters.projectName }} in ${{ parameters.releaseStage }}"
+    #     protectDefaultBranch: false
         #topics: ["${{ parameters.projectName }}", "${{ parameters.releaseStage }}", "${{ parameters.teamIdentifier }}", "from-template", "backstage" ]
-    - id: catalog
-      name: Register to Catalog
-      action: catalog:register
-      input:
-        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
-        optional: true
+    # - id: catalog
+    #   name: Register to Catalog
+    #   action: catalog:register
+    #   input:
+    #     repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+    #     optional: true
   output:
     links:
-      - title: View on Github
-        url: ${{ steps.publish.output.remoteUrl }}
-      - title: View in Catalog
-        icon: catalog
-        entityRef: ${{ steps.catalog.output.entityRef }}
+      # - title: View on Github
+      #   url: ${{ steps.publish.output.remoteUrl }}
+      # - title: View in Catalog
+      #   icon: catalog
+      #   entityRef: ${{ steps.catalog.output.entityRef }}
       - title: View in ArgoCD
         icon: catalog
         url: https://verbose-doodle-6vwwx955567f4qj9-30100.app.github.dev/applications/argocd/${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd
