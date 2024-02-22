@@ -29,13 +29,13 @@ from utils import *
 
 CODESPACE_WILL_EXIT_AND_DESTROY = False
 if (
-    DT_RW_API_TOKEN is "" or
-    DT_ENV_NAME is "" or
-    DT_ENV is "" or
-    GH_RW_TOKEN is "" or
-    DT_OAUTH_CLIENT_ID is "" or
-    DT_OAUTH_CLIENT_SECRET is "" or
-    DT_OAUTH_ACCOUNT_URN is ""
+    DT_RW_API_TOKEN == "" or
+    DT_ENV_NAME == "" or
+    DT_ENV == "" or
+    GH_RW_TOKEN == "" or
+    DT_OAUTH_CLIENT_ID == "" or
+    DT_OAUTH_CLIENT_SECRET == "" or
+    DT_OAUTH_ACCOUNT_URN == ""
 ):
     print(f"[{CODESPACE_NAME}] Missing input parameters. Will attempt to send log to DT then exit.")
     CODESPACE_WILL_EXIT_AND_DESTROY = True
