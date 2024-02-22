@@ -52,7 +52,7 @@ data:
     integrations:
       github:
         - host: github.com
-          token: ${GH_RW_TOKEN}
+          token: ${GITHUB_TOKEN}
     catalog:
       rules:
         - allow: [Component, Template, User, Group]
