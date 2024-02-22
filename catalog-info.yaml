@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: app-creator
-  title: Create a New Application (6)
+  title: Create a New Application (7)
   description: Create a new application from a template
   tags:
     - simplenodeservice
@@ -29,6 +29,7 @@ spec:
           #enumNames:
           #  - 'simplenodeservice'
           #  - 'project2TODO'
+          default: 'simplenodeservice'
     - title: Your Team's Details
       required:
         - teamIdentifier
