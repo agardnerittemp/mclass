@@ -12,8 +12,7 @@ metadata:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
 spec:
   rules:
-    - host: "verbose-doodle-6vwwx955567f4qj9-80.app.github.dev"
-      http:
+    - http:
         paths:
           - path: "/"
           #- path: "/${{ values.projectName }}-${{ values.teamIdentifier }}-${{ values.releaseStage }}"
