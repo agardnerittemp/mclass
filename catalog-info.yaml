@@ -176,6 +176,9 @@ spec:
       # - title: View in Catalog
       #   icon: catalog
       #   entityRef: ${{ steps.catalog.output.entityRef }}
+      - title: View Pull Request (${{ steps.publish.output.pullRequestNumber }})
+        icon: catalog
+        url: ${{ steps.publish.output.remoteUrl}}
       - title: View in ArgoCD
         icon: catalog
         url: https://verbose-doodle-6vwwx955567f4qj9-30100.app.github.dev/applications/argocd/${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd
