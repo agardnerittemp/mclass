@@ -10,4 +10,4 @@ Environment: preprod
 ## Monitored by Dynatrace
 📈Click the logo to view your dashboard 📈
 
-[![](https://raw.githubusercontent.com/GITHUB_ORG_SLASH_REPOSITORY/main/dtlogo.svg)](DT_TENANT_APPS_PLACEHOLDER/ui/apps/dynatrace.dashboards/)
+[![](https://raw.githubusercontent.com/GITHUB_REPOSITORY_PLACEHOLDER/main/dtlogo.svg)](DT_TENANT_APPS_PLACEHOLDER/ui/apps/dynatrace.dashboards/)

@@ -11,7 +11,7 @@ metadata:
     'backstage.io/kubernetes-namespace': 'simplenodeservice-team01-preprod-cd'
     argocd/app-name: simplenodeservice-team01-preprod-cd
   links:
-    - url: https://github.com/ag-dummy/mclass
+    - url: https://github.com/agardnerittemp/mclass
       title: Github Repo
       icon: github
     - url: https://simplenodeservice-team01-preprod.BASE_DOMAIN_PLACEHOLDER # TODO - when ingress is figured out
@@ -19,7 +19,7 @@ metadata:
       icon: subject
     - title: View in ArgoCD
       icon: catalog
-      url: https://verbose-doodle-6vwwx955567f4qj9-30100.app.github.dev/applications/argocd/simplenodeservice-team01-preprod-cd # TODO not replacing placeholders. Investigate.
+      url: https://improved-space-enigma-wrvvgx9rjv95hvj7x-30100.app.github.dev/applications/argocd/simplenodeservice-team01-preprod-cd # TODO not replacing placeholders. Investigate.
     - title: View in Dynatrace
       icon: catalog
       url: https://jao16384.sprint.apps.dynatracelabs.com
